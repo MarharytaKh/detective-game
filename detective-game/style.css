@@ -1,0 +1,27 @@
+﻿body{
+    font-family: Arial;
+    background:#222;
+    color:white;
+    display:flex;
+    justify-content:center;
+    margin-top:100px;
+}
+
+#game{
+    width:600px;
+}
+
+#text{
+    background:#333;
+    padding:20px;
+    margin-bottom:20px;
+    min-height:120px;
+}
+
+button{
+    display:block;
+    margin:5px 0;
+    padding:10px;
+    width:100%;
+    font-size:16px;
+}
