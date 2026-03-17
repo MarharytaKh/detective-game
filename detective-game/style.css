@@ -7,15 +7,29 @@
     margin-top:100px;
 }
 
-#game{
-    width:600px;
+#game {
+    width: 600px;
+    margin: 100px auto;
 }
 
-#text{
-    background:#333;
-    padding:20px;
-    margin-bottom:20px;
-    min-height:120px;
+#name {
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #ffd700;
+    white-space: pre-wrap;
+}
+
+#text {
+    background: #333;
+    padding: 20px;
+    min-height: 120px;
+    margin-bottom: 10px;
+}
+
+button {
+    padding: 10px;
+    margin-top: 5px;
+    width: 100%;
 }
 
 button{
@@ -25,3 +39,16 @@ button{
     width:100%;
     font-size:16px;
 }
+#evidencePanel {
+    position: fixed;
+    right: 20px;
+    top: 20px;
+    width: 200px;
+    background: #f0f0f0;
+    padding: 10px;
+    border: 1px solid #ccc;
+}
+
+    #evidencePanel ul {
+        padding-left: 20px;
+    }
