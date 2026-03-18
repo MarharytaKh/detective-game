@@ -10,14 +10,12 @@ const closeBtn = document.getElementById("closeSuspects")
 
 let dialogIndex = 0
 
-// ===== STATE =====
 const gameState = {
     evidence: [],
     talkedStudent: false,
     talkedProfessor2: false
 }
 
-// ===== НАЗВАНИЯ УЛИК =====
 const evidenceDescriptions = {
     key_access: "Ktoś użył klucza do gabinetu",
     assistant_evening: "Asystent był widziany wieczorem",
@@ -25,7 +23,6 @@ const evidenceDescriptions = {
     camera_assistant: "Nagranie: asystent w gabinecie"
 }
 
-// ===== ДОБАВЛЕНИЕ УЛИК =====
 function addEvidence(item) {
     if (!gameState.evidence.includes(item)) {
         gameState.evidence.push(item)
@@ -33,7 +30,6 @@ function addEvidence(item) {
     }
 }
 
-// ===== ОБНОВЛЕНИЕ UI =====
 function updateEvidenceUI() {
     const list = document.getElementById("evidenceList")
     list.innerHTML = ""
@@ -45,7 +41,6 @@ function updateEvidenceUI() {
     })
 }
 
-// ===== БЛОКНОТ =====
 notebookBtn.onclick = () => {
     panel.classList.remove("hidden")
 }
@@ -54,7 +49,6 @@ closeBtn.onclick = () => {
     panel.classList.add("hidden")
 }
 
-// ===== TYPEWRITER =====
 function typeText(text, callback) {
     let i = 0
     textElement.textContent = ""
