@@ -1,27 +1,31 @@
 const textElement = document.getElementById("text")
-const choicesElement = document.getElementById("choices")
 const nameElement = document.getElementById("name")
 
-let dialogIndex = 0
-let typing = false
-let fullText = ""
+const leftChoices = document.getElementById("leftChoices")
+const dialogChoices = document.getElementById("dialogChoices")
 
-// stan gry
+const notebookBtn = document.getElementById("notebookBtn")
+const panel = document.getElementById("suspectsPanel")
+const closeBtn = document.getElementById("closeSuspects")
+
+let dialogIndex = 0
+
+// ===== STATE =====
 const gameState = {
     evidence: [],
     talkedStudent: false,
     talkedProfessor2: false
 }
 
-// opisy dowodów
+// ===== НАЗВАНИЯ УЛИК =====
 const evidenceDescriptions = {
     key_access: "Ktoś użył klucza do gabinetu",
     assistant_evening: "Asystent był widziany wieczorem",
-    assistant_key: "Asystent ma klucz do gabinetu",
-    camera_assistant: "Nagranie: asystent w gabinecie wieczorem"
+    assistant_key: "Asystent ma klucz",
+    camera_assistant: "Nagranie: asystent w gabinecie"
 }
 
-// dodawanie dowodu
+// ===== ДОБАВЛЕНИЕ УЛИК =====
 function addEvidence(item) {
     if (!gameState.evidence.includes(item)) {
         gameState.evidence.push(item)
@@ -29,53 +33,48 @@ function addEvidence(item) {
     }
 }
 
-// panel dowodów
+// ===== ОБНОВЛЕНИЕ UI =====
 function updateEvidenceUI() {
     const list = document.getElementById("evidenceList")
-    if (!list) return
-
     list.innerHTML = ""
 
     gameState.evidence.forEach(item => {
         const li = document.createElement("li")
-        li.textContent = evidenceDescriptions[item]
+        li.textContent = evidenceDescriptions[item] || item
         list.appendChild(li)
     })
 }
 
+// ===== БЛОКНОТ =====
+notebookBtn.onclick = () => {
+    panel.classList.remove("hidden")
+}
+
+closeBtn.onclick = () => {
+    panel.classList.add("hidden")
+}
+
 // ===== TYPEWRITER =====
-
 function typeText(text, callback) {
-
     let i = 0
-    typing = true
-    fullText = text
-
     textElement.textContent = ""
 
     const interval = setInterval(() => {
-
-        textElement.textContent += text.charAt(i)
+        textElement.textContent += text[i]
         i++
 
         if (i >= text.length) {
             clearInterval(interval)
-            typing = false
-            if (callback) callback()
+            callback()
         }
-
     }, 20)
 }
 
-// klik = skip
-textElement.onclick = () => {
-    if (typing) {
-        textElement.textContent = fullText
-        typing = false
-    }
+function hasRequiredEvidence() {
+    return gameState.evidence.includes("key_access") &&
+        gameState.evidence.includes("assistant_evening") &&
+        gameState.evidence.includes("camera_assistant")
 }
-
-// ===== SCENY =====
 
 const scenes = {
 
@@ -84,26 +83,20 @@ const scenes = {
         choices: [
             { text: "Idź do gabinetu", next: "searchCabinet" },
             { text: "Porozmawiaj ze studentem", next: "talkStudent" },
-
             {
                 text: "Porozmawiaj z asystentem",
                 next: "talkAssistant",
                 condition: () => gameState.talkedStudent
             },
-
             { text: "Porozmawiaj z drugim profesorem", next: "talkProfessor" },
-
             {
                 text: "Sprawdź kamery",
                 next: "camera",
                 condition: () => gameState.talkedProfessor2
             },
-
             { text: "Oskarż kogoś", next: "accuse" }
         ]
     },
-
-    // ===== GABINET =====
 
     searchCabinet: {
         text: "W gabinecie widzisz biurko i zamkniętą szafkę.",
@@ -133,14 +126,12 @@ const scenes = {
         next: "searchCabinet"
     },
 
-    // ===== STUDENT =====
-
     talkStudent: {
         dialog: [
             { name: "Ty", text: "Gdzie byłeś wczoraj wieczorem?" },
             { name: "Student", text: "W bibliotece." },
             { name: "Ty", text: "Widziałeś coś podejrzanego?" },
-            { name: "Student", text: "Tak... widziałem asystenta wychodzącego z gabinetu." }
+            { name: "Student", text: "Tak... widziałem asystenta." }
         ],
         action: () => {
             addEvidence("assistant_evening")
@@ -149,12 +140,8 @@ const scenes = {
         next: "start"
     },
 
-    // ===== ASYSTENT =====
-
     talkAssistant: {
         dialog: [
-            { name: "Ty", text: "Musimy porozmawiać." },
-            { name: "Asystent", text: "O co chodzi?" },
             { name: "Ty", text: "Byłeś w gabinecie wieczorem." },
             { name: "Asystent", text: "To nieprawda." },
             { name: "Ty", text: "Student cię widział." },
@@ -165,14 +152,11 @@ const scenes = {
         next: "start"
     },
 
-    // ===== PROFESOR 2 =====
-
     talkProfessor: {
         dialog: [
             { name: "Ty", text: "Kiedy wyszedł pan z uczelni?" },
             { name: "Profesor", text: "Około 18:00." },
-            { name: "Ty", text: "Czy coś było nie tak?" },
-            { name: "Profesor", text: "Nie... ale warto sprawdzić kamery." }
+            { name: "Profesor", text: "Warto sprawdzić kamery." }
         ],
         action: () => {
             gameState.talkedProfessor2 = true
@@ -180,19 +164,14 @@ const scenes = {
         next: "start"
     },
 
-    // ===== KAMERY =====
-
     camera: {
         dialog: [
             { name: "Ty", text: "Sprawdzam nagrania." },
-            { name: "Ty", text: "Widzę asystenta wchodzącego do gabinetu." },
-            { name: "Ty", text: "Było już późno wieczorem." }
+            { name: "Ty", text: "Widzę asystenta w gabinecie wieczorem." }
         ],
         action: () => addEvidence("camera_assistant"),
         next: "start"
     },
-
-    // ===== OSKARŻENIE =====
 
     accuse: {
         text: "Kogo oskarżasz?",
@@ -205,15 +184,16 @@ const scenes = {
             { text: "Wróć", next: "start" }
         ]
     },
+
     not_enough: {
-        text: "Nie masz wystarczających dowodów. Musisz dalej prowadzić śledztwo.",
+        text: "Nie masz wystarczających dowodów.",
         choices: [
             { text: "Wróć", next: "start" }
         ]
     },
 
     ending_good: {
-        text: "Dowody wskazują na asystenta. Przyznaje się do kradzieży.",
+        text: "Dowody wskazują na asystenta.",
         choices: []
     },
 
@@ -221,20 +201,14 @@ const scenes = {
         text: "To nie była właściwa osoba.",
         choices: []
     }
-
 }
-function hasRequiredEvidence() {
-    return gameState.evidence.includes("key_access") &&
-        gameState.evidence.includes("assistant_evening") &&
-        gameState.evidence.includes("camera_assistant")
-}
-// ===== WYŚWIETLANIE =====
 
 function showScene(sceneName) {
 
     const scene = scenes[sceneName]
 
-    choicesElement.innerHTML = ""
+    leftChoices.innerHTML = ""
+    dialogChoices.innerHTML = ""
 
     if (scene.dialog) {
         dialogIndex = 0
@@ -245,65 +219,55 @@ function showScene(sceneName) {
     nameElement.textContent = ""
     textElement.textContent = scene.text
 
-    if (scene.action) {
-        scene.action()
-    }
+    if (scene.action) scene.action()
 
     scene.choices.forEach(choice => {
 
         if (choice.condition && !choice.condition()) return
 
-        const button = document.createElement("button")
-        button.textContent = choice.text
-        button.onclick = () => {
+        const btn = document.createElement("button")
+        btn.textContent = choice.text
+        btn.classList.add("leftBtn")
+
+        btn.onclick = () => {
             const nextScene = typeof choice.next === "function"
                 ? choice.next()
                 : choice.next
 
             showScene(nextScene)
         }
-        choicesElement.appendChild(button)
+
+        leftChoices.appendChild(btn)
     })
 }
-
-// ===== DIALOG =====
 
 function showDialog(scene) {
 
     const line = scene.dialog[dialogIndex]
-
     nameElement.textContent = line.name
-
-    choicesElement.innerHTML = ""
 
     typeText(line.text, () => {
 
-        const button = document.createElement("button")
-        button.textContent = "Dalej →"
+        const btn = document.createElement("button")
+        btn.textContent = "Dalej →"
+        btn.classList.add("dialogBtn")
 
-        button.onclick = () => {
+        btn.onclick = () => {
 
             dialogIndex++
 
             if (dialogIndex < scene.dialog.length) {
                 showDialog(scene)
             } else {
-
-                nameElement.textContent = ""
-
-                if (scene.action) {
-                    scene.action()
-                }
-
+                if (scene.action) scene.action()
                 showScene(scene.next)
             }
         }
 
-        choicesElement.appendChild(button)
+        dialogChoices.innerHTML = ""
+        dialogChoices.appendChild(btn)
     })
 }
-
-// start
 updateEvidenceUI()
 showScene("start")
 

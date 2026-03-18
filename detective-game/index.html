@@ -1,34 +1,54 @@
 ﻿<!DOCTYPE html>
-<html lang="ru">
+<html lang="pl">
 <head>
 <meta charset="UTF-8">
-<title>Detective Game</title>
+<title>Detective VN</title>
 <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
 <div id="game">
 
-    <div id="name"></div>
+    <!-- PANEL DOWODÓW -->
+    <div id="evidencePanel">
+        <h3>Dowody</h3>
+        <ul id="evidenceList"></ul>
+    </div>
 
-    <div id="text"></div>
+    <!-- КНОПКА БЛОКНОТА -->
+    <img id="notebookIMG" src="images/pd.png">
+    <img id="notebookBtn" src="images/bn.png">
+    
+    <!-- ЛЕВЫЕ КНОПКИ -->
+    <div id="leftChoices"></div>
 
-    <div id="choices"></div>
+    <!-- ДИАЛОГОВЫЕ КНОПКИ -->
+    <div id="dialogChoices"></div>
 
-</div>
+    <!-- ДИАЛОГ -->
+    <div id="dialogBox">
+        <div id="name"></div>
+        <div id="text"></div>
+    </div>
 
-<ul id="evidenceList"></ul>
+    <!-- ПАНЕЛЬ ПОДОЗРЕВАЕМЫХ -->
+    <div id="suspectsPanel" class="hidden">
 
-<div id="evidencePanel">
-    <h3>Dowody:</h3>
-    <ul id="evidenceList"></ul>
+        <div id="suspectsContent">
+            <img src="images/sus1.png">
+            <img src="images/sus2.png">
+            <img src="images/sus3.png">
+            <img src="images/sus4.png">
+        </div>
+
+        <button id="closeSuspects">Zamknij</button>
+
+    </div>
+
 </div>
 
 <script src="script.js"></script>
-
 </body>
 </html>
-
 
 
