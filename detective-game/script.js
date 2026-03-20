@@ -31,6 +31,7 @@ const evidenceDescriptions = {
     conflict_professors: "Konflikt między profesorami",
 
     student_motive: "Student bardzo chciał manuskrypt",
+    student_evening: "student był tego wieczoru w pobliżu gabinetu i zeznawał przeciwko asystentowi",
     professor_nervous: "Profesor był zdenerwowany"
 }
 
@@ -70,22 +71,22 @@ const interrogations = {
 
     student: {
         intro: [
-            { name: "Ty", text: "Musimy porozmawiać. Spokojnie, ale konkretnie." },
-            { name: "Student", text: "No dobra... tylko serio nic nie zrobiłem." },
-            { name: "Ty", text: "Z gabinetu profesora zniknął manuskrypt." },
+            { name: "Ty", text: "Cześć, musimy pogadać. Wszystko w porządku, ale muszę zadać ci kilka pytań." },
+            { name: "Student", text: "No dobrze, ale ja nic nie zrobiłem, jeśli o to chodzi." },
+            { name: "Ty", text: "Pewnie już wiesz. Z gabinetu profesora z katedry historii zniknął cenny rękopis. Cenny zarówno pod względem kulturowym, jak i finansowym." },
             { name: "Student", text: "Wiem... wszyscy o tym gadają." },
-            { name: "Ty", text: "Byłeś w pobliżu gabinetu." },
-            { name: "Student", text: "No byłem, ale to przypadek." },
-            { name: "Ty", text: "(Zaczyna się stresować.)" }
+            { name: "Ty", text: "Wiesz, dlaczego pytam właśnie ciebie?" },
+            { name: "Student", text: "*Zaczyna się stresować.*" },
+            { name: "Ty", text: "Powiem wprost. Wiem, że jesteś wzorowym studentem, więc twoje aktywne zainteresowanie rękopisem jest zrozumiałe. Jednak właśnie z tego powodu jesteś również traktowany jako potencjalny złodziej." }
         ],
 
         questions: [
             {
                 text: "Dlaczego interesowałeś się manuskryptem?",
                 dialog: [
-                    { name: "Ty", text: "Wysłałeś maila z prośbą o dostęp." },
-                    { name: "Student", text: "No bo to ważne... każdy by chciał to zobaczyć." },
-                    { name: "Ty", text: "Byłeś bardzo zdeterminowany." },
+                    { name: "Ty", text: "Wysłałeś maila z prośbą o dostęp.Widziałem twoje prośby w wiadomościach e-mail profesora." },
+                    { name: "Student", text: "No bo to ważne... każdy by chciał to zobaczyć. A ja, jako student studiów magisterskich na wydziale historii, bardzo chciałem zapoznać się z tym rękopisem, a przynajmniej go zobaczyć." },
+                    { name: "Ty", text: "Byłeś bardzo zdeterminowany i uparty w swoich prośbach." },
                     { name: "Student", text: "Może trochę..." }
                 ],
                 evidence: "student_motive"
@@ -93,20 +94,27 @@ const interrogations = {
             {
                 text: "Gdzie byłeś wieczorem?",
                 dialog: [
+                    { name: "Ty", text: "Gdzie byłeś wieczorem w dniu zaginięcia?" },
                     { name: "Ty", text: "Podaj dokładnie." },
-                    { name: "Student", text: "W bibliotece." },
-                    { name: "Ty", text: "Ktoś potwierdzi?" },
-                    { name: "Student", text: "Nie wiem... było dużo ludzi." }
+                    { name: "Student", text: "Jak zwykle spędziłem wieczór w bibliotece uniwersyteckiej, a potem, około godziny 20:00, poszedłem do swojego pokoju w akademiku" },
+                    { name: "Ty", text: "Świetnie, kto może potwierdzić twoje zeznania?" },
+                    { name: "Student", text: "Nie wiem, w bibliotece nie ma zbyt wielu ludzi, zwłaszcza wieczorem; być może są tam kamery. A jeśli chodzi o akademik, to przy wejściu stoi tylko kierowniczka." },
+                    { name: "Ty", text: "A drugi współlokator? Przecież nie mieszkasz sam, prawda?" },
+                    { name: "Student", text: "Nie, mam współlokatora. Ale mój sąsiad to straszny imprezowicz i wrócił z klubu nad ranem, więc nic nie wie i nic nie powie." },
+                    { name: "Ty", text: "Rozumiem." },
                 ]
             },
             {
                 text: "Co widziałeś przy gabinecie?",
                 dialog: [
-                    { name: "Ty", text: "Nie ściemniaj." },
-                    { name: "Student", text: "Dobra..." },
-                    { name: "Student", text: "Widziałem asystenta." },
-                    { name: "Student", text: "Wychodził z gabinetu późno." },
-                    { name: "Ty", text: "(To ważne.)" }
+                    { name: "Ty", text: "Nie masz już nic do powiedzenia, może widziałeś kogoś podejrzanego?" },
+                    { name: "Student", text: "*jest zdenerwowany*..." },
+                    { name: "Ty", text: "Nie milcz, bo lepiej opowiedz o wszystkim, co widziałeś, biorąc pod uwagę, że do późna na uniwersytecie było mało ludzi, jak sam mówisz." },
+                    { name: "Student", text: "..." },
+                    { name: "Ty", text: "Bo jeśli nie będę miał wystarczających dowodów i poszlak, mogę nie dowiedzieć się wszystkiego i oskarżyć niewłaściwą osobę." },
+                    { name: "Student", text: "..." },
+                    { name: "Ty", text: "Na przykład ciebie." },
+                    { name: "Student", text: "Nie, nie, nie chcę iść do więzienia. No dobrze. Co mi do tego. Widziałem, jak asystent profesora nerwowo kręcił się w skrzydle, w którym znajduje się gabinet. Więcej nie mam do powiedzenia." },
                 ],
                 evidence: "assistant_evening"
             },
@@ -115,8 +123,9 @@ const interrogations = {
                 dialog: [
                     { name: "Student", text: "Skracałem drogę." },
                     { name: "Ty", text: "O tej godzinie?" },
-                    { name: "Student", text: "...no dobra, może nie brzmi to najlepiej." }
-                ]
+                    { name: "Student", text: "...no dobra, może nie brzmi to najlepiej. Ale to prawda." }
+                ],
+                evidence: "student_evening"
             }
         ]
     },
