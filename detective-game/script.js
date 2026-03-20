@@ -367,7 +367,7 @@ function showScene(name) {
     leftChoices.innerHTML = ""
     dialogChoices.innerHTML = ""
 
-    if (name === "cabinet" || name === "lock" || name === "computer") {
+    if (name === "cabinet" || name === "lock" || name === "computer" || name === "mail_professor" || name === "mail_student") {
         game.style.backgroundImage = "url('images/po.png')"
     } else {
         game.style.backgroundImage = "url('images/kt.png')"
