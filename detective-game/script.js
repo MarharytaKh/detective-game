@@ -89,7 +89,7 @@ const interrogations = {
                     { name: "Ty", text: "Byłeś bardzo zdeterminowany i uparty w swoich prośbach." },
                     { name: "Student", text: "Może trochę..." }
                 ],
-                evidence: "student_motive"
+
             },
             {
                 text: "Gdzie byłeś wieczorem?",
@@ -273,7 +273,8 @@ const scenes = {
     computer: {
         text: "Na komputerze są maile.",
         choices: [
-            { text: "Mail profesora", next: "mail_professor" },
+            { text: "korespondencja z profesorem filologii", next: "mail_professor" },
+            { text: "korespondencja ze studentem", next: "mail_student" },
             { text: "Wróć", next: "cabinet" }
         ]
     },
@@ -281,10 +282,24 @@ const scenes = {
     mail_professor: {
         dialog: [
             { name: "Ty", text: "Profesor odmówił udostępnienia manuskryptu." },
-            { name: "Ty", text: "(Konflikt.)" }
+            { name: "Ty", text: "Hm, sądząc po korespondencji, doszło między nimi do poważnego sporu..." },
+            { name: "Ty", text: "Trzeba koniecznie znaleźć tego profesora i go przesłuchać." }
         ],
         action: () => {
             addEvidence("conflict_professors")
+            gameState.computerChecked = true
+        },
+        next: "computer"
+    },
+    mail_student: {
+        dialog: [
+            { name: "Ty", text: "Wygląda na to, że ten student bardzo pragnie obejrzeć tę relikwię." },
+            { name: "Ty", text: "I najwyraźniej profesor był temu zdecydowanie przeciwny. Hm, ja też nie powierzyłbym studentowi tak drogiej rzeczy. Zwłaszcza biorąc pod uwagę jego niecierpliwość." },
+            { name: "Ty", text: "Trzeba znaleźć tego studenta i go przesłuchać." },
+            
+        ],
+        action: () => {
+            addEvidence("student_motive")
             gameState.computerChecked = true
         },
         next: "computer"
