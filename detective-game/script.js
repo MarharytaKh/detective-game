@@ -132,48 +132,38 @@ const interrogations = {
 
     assistant: {
         intro: [
-            { name: "Ty", text: "Musimy wyjaśnić kilka rzeczy." },
-            { name: "Asystent", text: "Nie mam czasu na przesłuchania." },
-            { name: "Ty", text: "Masz problem, więc znajdziesz czas." },
-            { name: "Asystent", text: "...o co chodzi?" },
-            { name: "Ty", text: "O manuskrypt." },
-            { name: "Asystent", text: "(Milczy chwilę)" }
+            { name: "Ty", text: "Witam, wie Pan już o moim przyjeździe i o tym, kim jestem. Muszę zadać wam kilka pytań. Ma Pan chwilę?" },
+            { name: "Asystent", text: "Oczywiście, proszę bardzo, mamy wystarczająco dużo czasu." },
+            { name: "Ty", text: "Świetnie. Jest pan asystentem profesora historii sztuki, prawda?" },
+            { name: "Asystent", text: "Tak" },
+            { name: "Ty", text: "Czy mogę odtąd zwracać się do Pana na „ty”?" },
+            { name: "Asystent", text: "Tak, jasne" },
         ],
 
         questions: [
             {
                 text: "Masz klucz do gabinetu?",
                 dialog: [
-                    { name: "Ty", text: "Masz dostęp, prawda?" },
+                    { name: "Ty", text: "Masz klucz do gabinetu, prawda?" },
                     { name: "Asystent", text: "Tak, mam klucz." },
                     { name: "Ty", text: "Czyli mogłeś wejść kiedy chciałeś." },
-                    { name: "Asystent", text: "To nic nie znaczy." }
+                    { name: "Asystent", text: "Oczywiście, proszę tylko, żeby nie traktować tego jako bezpośredniego dowodu na to, że mogłem coś ukraść" }
                 ],
                 evidence: "assistant_key"
             },
             {
                 text: "Byłeś w gabinecie wieczorem?",
                 dialog: [
-                    { name: "Ty", text: "Byłeś tam po godzinach." },
-                    { name: "Asystent", text: "Nie." },
-                    { name: "Ty", text: "Mamy świadka." },
-                    { name: "Asystent", text: "...to pomyłka." }
-                ]
-            },
-            {
-                text: "Po co wracałeś na uczelnię?",
-                dialog: [
-                    { name: "Ty", text: "Kamery mogą to sprawdzić." },
-                    { name: "Asystent", text: "..." },
-                    { name: "Asystent", text: "Miałem coś do dokończenia." },
-                    { name: "Ty", text: "(Wygląda na spiętego.)" }
+                    { name: "Ty", text: "Zauważono cię w korytarzu przy gabinecie" },
+                    { name: "Asystent", text: "Byłem tam, tak,to prawda" },
+                    { name: "Ty", text: "Co tam robiłeś w tym czasie?" },
+                    { name: "Asystent", text: "Zostawiłem w gabinecie prace studentów, które profesor zlecił mi sprawdzić, więc musiałem wrócić, żeby je zabrać" }
                 ]
             },
             {
                 text: "Czy ktoś może to potwierdzić?",
                 dialog: [
-                    { name: "Asystent", text: "Nie potrzebuję świadków." },
-                    { name: "Ty", text: "(Unika odpowiedzi.)" }
+                    { name: "Asystent", text: "Niestety nie, bo sam dobrze wiesz, że w gabinetach nie nagrywa się rozmów ze względu na poufność." },
                 ]
             }
         ]
@@ -317,6 +307,18 @@ const scenes = {
 }
 
 function startInterrogation(name) {
+    if (name === "student") {
+        game.style.backgroundImage = "url('images/fs.png')"
+    }
+
+    else if (name === "assistant") {
+        game.style.backgroundImage = "url('images/ae.png')"
+    }
+
+    else if (name === "professor2") {
+        game.style.backgroundImage = "url('images/fs.png')"
+    }
+
     gameState.interrogation.current = name
     showCustomDialog(interrogations[name].intro, () => showQuestions())
 }
