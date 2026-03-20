@@ -234,7 +234,7 @@ const interrogations = {
 const scenes = {
 
     start: {
-        text: "Rozpoczynasz śledztwo.",
+        text: "Szukasz złodzieja cennego rękopisu. Musisz przesłuchać wszystkich potencjalnych sprawców i świadków, aby wyciągnąć właściwe wnioski.",
         choices: [
             { text: "Gabinet", next: "cabinet" },
             { text: "Student", next: () => startInterrogation("student") },
