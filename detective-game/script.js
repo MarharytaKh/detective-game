@@ -7,7 +7,7 @@ const leftChoices = document.getElementById("leftChoices")
 const dialogChoices = document.getElementById("dialogChoices")
 const introScreen = document.getElementById("introScreen")
 const startGameBtn = document.getElementById("startGameBtn")
-
+const game = document.getElementById("game")
 startGameBtn.onclick = () => {
     introScreen.style.display = "none"
 }
@@ -365,6 +365,11 @@ function showScene(name) {
     leftChoices.innerHTML = ""
     dialogChoices.innerHTML = ""
 
+    if (name === "cabinet" || name === "lock" || name === "computer") {
+        game.style.backgroundImage = "url('images/po.png')"
+    } else {
+        game.style.backgroundImage = "url('images/kt.png')"
+    }
     if (scene.dialog) {
         showCustomDialog(scene.dialog, () => {
             if (scene.action) scene.action()
