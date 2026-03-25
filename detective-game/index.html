@@ -4,6 +4,10 @@
 <meta charset="UTF-8">
 <title>Detective VN</title>
 <link rel="stylesheet" href="style.css">
+<script src="interrogations.js" defer></script>
+<script src="scenes.js" defer></script>
+<script src="script.js" defer></script>
+
 </head>
 <body>
 
@@ -28,7 +32,10 @@
     <div id="leftChoices"></div>
     
     <div id="dialogChoices"></div>
-
+    <div id="characters">
+        <img id="detective" src="images/gd.png">
+        <img id="suspect">
+    </div>
     <div id="dialogBox">
         <div id="name"></div>
         <div id="text"></div>
@@ -36,20 +43,41 @@
 
     <div id="suspectsPanel" class="hidden">
 
-        <div id="suspectsContent">
-            <img src="images/sus1.png">
-            <img src="images/sus2.png">
-            <img src="images/sus3.png">
-            <img src="images/sus4.png">
-        </div>
+    <div id="suspectsContent">
 
-        <button id="closeSuspects">Zamknij</button>
+    <div class="suspect">
+        <img src="images/sus1.png">
+        <button class="leftBtn" onclick="accuse('student')">Oskarżyć</button>
+    </div>
 
+    <div class="suspect">
+        <img src="images/sus2.png">
+        <button class="leftBtn" onclick="accuse('assistant')">Oskarżyć</button>
+    </div>
+
+    <div class="suspect">
+        <img src="images/sus3.png">
+        <button class="leftBtn" onclick="accuse('professor2')">Oskarżyć</button>
+    </div>
+
+    <div class="suspect">
+        <img src="images/sus4.png">
+        <button class="leftBtn">???</button>
     </div>
 
 </div>
 
-<script src="script.js"></script>
+    <button id="closeSuspects">Zamknij</button>
+</div>
+
+<!-- ВНЕ панели -->
+<div id="endingScreen" class="hidden">
+    <div id="endingText"></div>
+    <button onclick="location.reload()">Zagraj ponownie</button>
+</div>
+
+</div>
+
 </body>
 </html>
 
