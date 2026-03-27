@@ -34,7 +34,8 @@ const gameState = {
     },
     flags: {
         studentSpoke: false
-    }
+    },
+    askedQuestions: {}
 }
 
 notebookBtn.onclick = () => panel.classList.remove("hidden")
@@ -121,19 +122,28 @@ function showQuestions() {
 
     data.questions.forEach((q, index) => {
 
+        const key = gameState.interrogation.current + "_" + index
+
         const btn = document.createElement("button")
         btn.textContent = q.text
         btn.classList.add("leftBtn")
 
+        // если уже спрашивали → серый
+        if (gameState.askedQuestions[key]) {
+            btn.classList.add("asked")
+        } else {
+            btn.classList.add("new") // новый цвет
+        }
+
         btn.onclick = () => {
+
+            gameState.askedQuestions[key] = true
 
             showCustomDialog(q.dialog, () => {
 
                 if (q.evidence) addEvidence(q.evidence)
-
-                if (q.action) q.action()
-
                 if (q.unlockCamera) gameState.cameraUnlocked = true
+                if (q.action) q.action()
 
                 showQuestions()
             })
@@ -155,6 +165,15 @@ function showScene(name) {
     suspectImg.style.display = "none"
     const scene = scenes[name]
 
+    const detective = document.getElementById("detective")
+
+    // по умолчанию показываем
+    detective.style.display = "block"
+
+    // скрываем в нужных сценах
+    if (name === "mail_professor" || name === "mail_student") {
+        detective.style.display = "none"
+    }
     leftChoices.innerHTML = ""
     dialogChoices.innerHTML = ""
 
