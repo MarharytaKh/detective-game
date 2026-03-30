@@ -26,16 +26,31 @@ body {
     right: 20px;
     top: 20px;
     width: 203px;
-    height: 406px;
+    height: 435px;
     background: url("images/ave.png");
     background-size: cover;
     padding: 15px;
     color: black;
 }
 #evidenceList {
-    max-height: 240px; /* чуть меньше панели */
+    max-height: 360px;
     overflow-y: auto;
+    padding-right: 5px;
 }
+#evidenceList::-webkit-scrollbar {
+    width: 12px;
+}
+    #evidenceList::-webkit-scrollbar-track {
+        background: url("images/bnslt.png");
+        background-size: 100% 100%;
+        background-repeat: no-repeat;
+    }
+
+    #evidenceList::-webkit-scrollbar-thumb {
+        background: url("images/bnsl.png");
+        background-size: 100% 100%;
+        border-radius: 10px;
+    }
 
 #notebookBtn {
     font-family: "XTypewriter-Regular", Arial;
@@ -150,32 +165,34 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0; /* ВАЖНО — убирает внутренние отступы */
+    gap: 0;
 }
 
     .suspect button {
+        background: url("images/bnskc.png");
         margin-top: -20px;
-        width: 120px;
+        width: 185px;
+        height: 58px;
     }
 #suspectsContent {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 20px;
-    align-items: start; /* ВАЖНО */
+    align-items: start;
 }
 
     #suspectsContent img {
         width: 100%;
-        max-height: 450px; /* ограничиваем */
+        max-height: 450px;
         margin: 0;
         object-fit: contain;
         display: block;
     }
 #closeSuspects {
     font-family: "XTypewriter-Regular", Arial;
-    position: absolute; /* ВАЖНО */
-    bottom: 45px; /* прибиваем вниз */
-    right: 60px; /* вправо */
+    position: absolute;
+    bottom: 45px;
+    right: 60px;
     height: 50px;
     width: 100px;
     background: url("images/bn.png");
@@ -238,13 +255,14 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: black;
+    background: url("images/ted.png");
     color: white;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     font-size: 24px;
+    z-index: 5000;
 }
 
 .hidden {
@@ -272,3 +290,19 @@ body {
     bottom: 0;
     height: 100%;
 }
+#musicBtn {
+    position: absolute;
+    bottom: 22px;
+    left: 280px;
+    width: 75px;
+    height: 75px;
+    background: url("images/bnu.png");
+    background-size: 100% 100%;
+    border: none;
+    cursor: pointer;
+    z-index: 3000;
+}
+    #musicBtn img {
+        width: 35px;
+        height: 35px;
+    }

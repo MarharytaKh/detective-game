@@ -12,6 +12,12 @@
 <body>
 
 <div id="game">
+<audio id="bgMusic" loop>
+    <source src="music/fj.mp3" type="audio/mpeg">
+</audio>
+<button id="musicBtn">
+    <img id="musicIcon" src="images/so.png">
+</button>
     <div id="introScreen">
 
         <img src="images/sr.png" id="introImage">
@@ -68,7 +74,7 @@
 <!-- ВНЕ панели -->
 <div id="endingScreen" class="hidden">
     <div id="endingText"></div>
-    <button onclick="location.reload()">Zagraj ponownie</button>
+    <button onclick="location.reload()" class="dialogBtn">Zagraj ponownie</button>
 </div>
 
 </div>

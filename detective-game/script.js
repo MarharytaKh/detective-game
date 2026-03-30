@@ -13,8 +13,35 @@ const detectiveImg = document.getElementById("detective")
 const suspectImg = document.getElementById("suspect")
 const scenes = window.scenes
 const interrogations = window.interrogations
+
+
+
+const music = document.getElementById("bgMusic")
+const musicBtn = document.getElementById("musicBtn")
+const musicIcon = document.getElementById("musicIcon")
+
+let isPlaying = false
+
+musicBtn.onclick = () => {
+    if (isPlaying) {
+        music.pause()
+        musicIcon.src = "images/sf.png"
+    } else {
+        music.play()
+        musicIcon.src = "images/so.png"
+    }
+    isPlaying = !isPlaying
+}
+
+
+
+
+
+
 startGameBtn.onclick = () => {
     introScreen.style.display = "none"
+    music.play()
+    isPlaying = true
 }
 const characterImages = {
     student: "images/sut.png",
@@ -46,7 +73,7 @@ const evidenceDescriptions = {
     camera_assistant: "Nagranie: asystent w gabinecie",
     assistant_key: "Asystent ma klucz",
     key_access: "Ktoś użył klucza",
-    conflict_professors: "Konflikt między profesorami",
+    conflict_professors: "Konflikt między profesorami ",
 
     student_motive: "Student bardzo chciał manuskrypt",
     student_evening: "student był tego wieczoru w pobliżu gabinetu i zeznawał przeciwko asystentowi",

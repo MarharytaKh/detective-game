@@ -96,13 +96,6 @@ window.interrogations = {
                     { name: "Asystent", text: "Niestety nie, bo sam dobrze wiesz, że w gabinetach nie nagrywa się rozmów ze względu na poufność." }
                 ]
             },
-            {
-                text: "Dlaczego kamera cię nie pokazuje dokładnie?",
-                condition: () => gameState.evidence.includes("camera_blind_spot"),
-                dialog: [
-                    { name: "Asystent", text: "Bo kamera nie obejmuje wszystkiego." }
-                ]
-            }
         ]
     },
 
@@ -112,17 +105,15 @@ window.interrogations = {
             { name: "Profesor", text: "Proszę bardzo." },
             { name: "Ty", text: "Chodzi o manuskrypt." },
             { name: "Profesor", text: "Domyślam się." },
-            { name: "Ty", text: "(Zbyt spokojny.)" }
         ],
         questions: [
             {
                 text: "Dlaczego chciał Pan manuskrypt?",
                 dialog: [
-                    { name: "Ty", text: "Prosił Pan o dostęp." },
+                    { name: "Ty", text: "Prosił Pan o dostęp do artefaktu." },
                     { name: "Profesor", text: "To naturalne w pracy naukowej." },
                     { name: "Ty", text: "Odmówiono Panu." },
                     { name: "Profesor", text: "...tak." },
-                    { name: "Ty", text: "(Wyraźne napięcie.)" }
                 ],
                 evidence: "conflict_professors"
             },
@@ -158,13 +149,14 @@ window.interrogations = {
 
     librarian: {
         intro: [
-            { name: "Ty", text: "Chciałbym zadać kilka pytań." },
+            { name: "Ty", text: "Dzień dobry, rozumiem, że jest Pani zajęta, ale muszę zadać Pani kilka pytań" },
             { name: "Bibliotekarka", text: "Słucham." }
         ],
         questions: [
             {
                 text: "Student wieczorem",
                 dialog: [
+                    { name: "Ty", text: "Jeden ze studentów, Piotr Lojoński, twierdził, że był w bibliotece wczoraj wieczorem. Proszę o potwierdzenie lub zaprzeczenie tej informacji." },
                     { name: "Bibliotekarka", text: "Był, ale wyszedł wcześniej niż mówi." }
                 ],
                 evidence: "student_lie"
@@ -181,49 +173,47 @@ window.interrogations = {
             {
                 text: "Klucze",
                 dialog: [
-                    { name: "Sekretarka", text: "Kopia klucza istnieje." }
+                    { name: "Ty", text: "Interesuje mnie, kto posiada klucze do gabinetu 302b i ile jest ich kopii?" },
+                    { name: "Sekretarka", text: "Są w sumie trzy: jedno należy do profesora, drugie przypisano jego asystentowi, ponieważ pracują razem, a asystent nie ma innego miejsca pracy." },
+                    { name: "Ty", text: "A trzeci?" },
+                    { name: "Sekretarka", text: "Przechowywany w sejfie " }
                 ],
                 evidence: "fake_key"
             }
         ]
     },
 
-    guard: {
-        intro: [
-            { name: "Ty", text: "Chciałbym zadać kilka pytań." },
-            { name: "Ochroniarz", text: "Słucham." }
-        ],
-        questions: [
-            {
-                text: "Kto wychodził",
-                dialog: [
-                    { name: "Ochroniarz", text: "Asystent wychodził późno." }
-                ],
-                evidence: "assistant_evening"
-            },
-            {
-                text: "Czy ktoś jeszcze",
-                dialog: [
-                    { name: "Ochroniarz", text: "Możliwe, kamera nie łapie wszystkiego." }
-                ],
-                evidence: "camera_blind_spot"
-            }
-        ]
-    },
-
     phd: {
-        intro: [
-            { name: "Ty", text: "Chciałbym zadać kilka pytań." },
-            { name: "Doktorant", text: "Słucham." }
-        ],
-        questions: [
-            {
-                text: "Konflikt",
-                dialog: [
-                    { name: "Doktorant", text: "Profesor był wściekły." }
-                ],
-                evidence: "conflict_professors"
-            }
-        ]
+        phd: {
+            intro: [
+                { name: "Ty", text: "Chciałbym zadać kilka pytań." },
+                { name: "Doktorantka", text: "Jeśli chodzi o profesorów… lepiej uważać, ale spróbuję pomóc." },
+                { name: "Ty", text: "Słyszałem, że między nimi było coś więcej niż zwykła rywalizacja." },
+                { name: "Doktorantka", text: "To się ciągnie od lat." }
+            ],
+            questions: [
+                {
+                    text: "Co dokładnie się wydarzyło?",
+                    dialog: [
+                        { name: "Doktorantka", text: "Kilka lat temu prowadzili wspólny projekt. Duży grant, publikacja w prestiżowym czasopiśmie..." },
+                        { name: "Ty", text: "I?" },
+                        { name: "Doktorantka", text: "Wyniki… nie zgadzały się z hipotezą. Profesor filologii chciał je opublikować tak, jak są." },
+                        { name: "Ty", text: "A drugi profesor?" },
+                        { name: "Doktorantka", text: "Naciskał, żeby „doprecyzować” dane. Korekty, które poprawiały narrację." },
+                        { name: "Ty", text: "Czyli manipulacja?" },
+                        { name: "Doktorantka", text: "Oficjalnie — „interpretacja”. Nieoficjalnie… przesunięto kilka punktów, żeby wyglądało lepiej." },
+                        { name: "Ty", text: "Zostało to wykryte?" },
+                        { name: "Doktorantka", text: "Tak. Recenzenci to wyłapali. Publikacja została wstrzymana, grant cofnięto." },
+                        { name: "Ty", text: "Kto poniósł konsekwencje?" },
+                        { name: "Doktorantka", text: "Formalnie obaj. Ale to profesor od manuskryptu wziął winę na siebie, żeby nie pogrążyć zespołu." },
+                        { name: "Ty", text: "A prywatnie?" },
+                        { name: "Doktorantka", text: "Od tamtej pory mu nie ufał. Mówił, że tamten potrafi nagiąć zasady, kiedy bardzo czegoś chce." },
+                        { name: "Ty", text: "Czyli konflikt nie zniknął." },
+                        { name: "Doktorantka", text: "Nie. Był tylko… przykryty. Do czasu." }
+                    ],
+                    evidence: "conflict_professors"
+                }
+            ]
+        }
     }
 }
