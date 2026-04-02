@@ -55,7 +55,7 @@ window.interrogations = {
                 ],
                 evidence: "student_evening",
                 action: () => {
-                    window.game.state.flags.studentSpoke = true
+                    gameState.flags.studentSpoke = true
                 }
             }
         ]
