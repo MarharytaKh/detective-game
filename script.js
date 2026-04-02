@@ -82,6 +82,12 @@ class Game {
 
         this.updateEvidenceUI()
         this.showScene("start")
+        this.loadGame()
+
+        document.getElementById("resetBtn").onclick = () => {
+            localStorage.removeItem("detectiveSave")
+            location.reload()
+        }
     }
 
     toggleMusic() {
@@ -255,6 +261,17 @@ class Game {
                 this.dialogChoices.innerHTML = ""
                 this.dialogChoices.appendChild(btn)
             })
+        }
+        saveGame() {
+            localStorage.setItem("detectiveSave", JSON.stringify(this.state))
+        }
+
+        loadGame() {
+            const data = localStorage.getItem("detectiveSave")
+            if (data) {
+                Object.assign(this.state, JSON.parse(data))
+                this.updateEvidenceUI()
+            }
         }
 
         nextLine()
