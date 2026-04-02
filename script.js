@@ -161,7 +161,7 @@ class Game {
                 this.showCustomDialog(q.dialog, () => {
                     if (q.evidence) this.addEvidence(q.evidence)
                     if (q.unlockCamera) this.state.cameraUnlocked = true
-                    if (q.action) q.action()
+                    if (q.action) q.action(this)
 
                     this.showQuestions()
                 })
@@ -287,6 +287,4 @@ class Game {
         endingText.textContent = text
     }
 }
-
-// запуск
-const game = new Game()
+window.game = new Game()
