@@ -1,16 +1,41 @@
 window.scenes = {
+
     start: {
         text: "Szukasz złodzieja cennego rękopisu. Musisz przesłuchać wszystkich potencjalnych sprawców i świadków, aby wyciągnąć właściwe wnioski.",
         choices: [
             { text: "Gabinet", next: "cabinet" },
             { text: "Student", next: () => startInterrogation("student") },
             { text: "Asystent", next: () => startInterrogation("assistant") },
-            { text: "Drugi profesor", next: () => startInterrogation("professor2"), condition: () => gameState.computerChecked },
-            { text: "Kamery", next: "camera", condition: () => gameState.cameraUnlocked },
-            { text: "Bibliotekarka", next: () => startInterrogation("librarian"), condition: () => gameState.flags && gameState.flags.studentSpoke },
-            { text: "Sekretarka", next: () => startInterrogation("secretary"), condition: () => gameState.evidence && gameState.evidence.includes("assistant_key") },
-            { text: "Ochroniarz", next: () => startInterrogation("guard"), condition: () => gameState.cameraUnlocked },
-            { text: "Doktorant", next: () => startInterrogation("phd"), condition: () => gameState.evidence && gameState.evidence.includes("conflict_professors") }
+            {
+                text: "Drugi profesor",
+                next: () => startInterrogation("professor2"),
+                condition: () => gameState.computerChecked
+            },
+            {
+                text: "Kamery",
+                next: "camera",
+                condition: () => gameState.cameraUnlocked
+            },
+            {
+                text: "Bibliotekarka",
+                next: () => startInterrogation("librarian"),
+                condition: () => gameState.flags && gameState.flags.studentSpoke
+            },
+            {
+                text: "Sekretarka",
+                next: () => startInterrogation("secretary"),
+                condition: () => gameState.evidence && gameState.evidence.includes("assistant_key")
+            },
+            {
+                text: "Ochroniarz",
+                next: () => startInterrogation("guard"),
+                condition: () => gameState.cameraUnlocked
+            },
+            {
+                text: "Doktorant",
+                next: () => startInterrogation("phd"),
+                condition: () => gameState.evidence && gameState.evidence.includes("conflict_professors")
+            }
         ]
     },
 
@@ -98,4 +123,5 @@ window.scenes = {
         action: () => addEvidence("student_lie"),
         next: "computer"
     }
+
 }
