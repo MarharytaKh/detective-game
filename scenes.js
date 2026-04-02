@@ -9,32 +9,32 @@ window.scenes = {
             {
                 text: "Drugi profesor",
                 next: () => startInterrogation("professor2"),
-                condition: () => window.game.state.computerChecked
+                condition: () => gameState.computerChecked
             },
             {
                 text: "Kamery",
                 next: "camera",
-                condition: () => window.game.state.cameraUnlocked
+                condition: () => gameState.cameraUnlocked
             },
             {
                 text: "Bibliotekarka",
                 next: () => startInterrogation("librarian"),
-                condition: () => window.game.state.flags && window.game.state.flags.studentSpoke
+                condition: () => gameState.flags && gameState.flags.studentSpoke
             },
             {
                 text: "Sekretarka",
                 next: () => startInterrogation("secretary"),
-                condition: () => window.game.state.evidence && window.game.state.evidence.includes("assistant_key")
+                condition: () => gameState.evidence && gameState.evidence.includes("assistant_key")
             },
             {
                 text: "Ochroniarz",
                 next: () => startInterrogation("guard"),
-                condition: () => window.game.state.cameraUnlocked
+                condition: () => gameState.cameraUnlocked
             },
             {
                 text: "Doktorant",
                 next: () => startInterrogation("phd"),
-                condition: () => window.game.state.evidence && window.game.state.evidence.includes("conflict_professors")
+                condition: () => gameState.evidence && gameState.evidence.includes("conflict_professors")
             }
         ]
     },
@@ -76,7 +76,7 @@ window.scenes = {
         ],
         action: () => {
             addEvidence("conflict_professors")
-            window.game.state.computerChecked = true
+            gameState.computerChecked = true
         },
         next: "computer"
     },
@@ -89,7 +89,7 @@ window.scenes = {
         ],
         action: () => {
             addEvidence("student_motive")
-            window.game.state.computerChecked = true
+            gameState.computerChecked = true
         },
         next: "computer"
     },
