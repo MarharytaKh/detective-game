@@ -4,37 +4,37 @@ window.scenes = {
         text: "Szukasz złodzieja cennego rękopisu. Musisz przesłuchać wszystkich potencjalnych sprawców i świadków, aby wyciągnąć właściwe wnioski.",
         choices: [
             { text: "Gabinet", next: "cabinet" },
-            { text: "Student", next: () => startInterrogation("student") },
-            { text: "Asystent", next: () => startInterrogation("assistant") },
+            { text: "Student", next: () => window.game.startInterrogation("student") },
+            { text: "Asystent", next: () => window.game.startInterrogation("assistant") },
             {
                 text: "Drugi profesor",
-                next: () => startInterrogation("professor2"),
-                condition: () => gameState.computerChecked
+                next: () => window.game.startInterrogation("professor2"),
+                condition: () => window.game.state.computerChecked
             },
             {
                 text: "Kamery",
                 next: "camera",
-                condition: () => gameState.cameraUnlocked
+                condition: () => window.game.state.cameraUnlocked
             },
             {
                 text: "Bibliotekarka",
-                next: () => startInterrogation("librarian"),
-                condition: () => gameState.flags && gameState.flags.studentSpoke
+                next: () => window.game.startInterrogation("librarian"),
+                condition: () => window.game.state.flags && window.game.state.flags.studentSpoke
             },
             {
                 text: "Sekretarka",
-                next: () => startInterrogation("secretary"),
-                condition: () => gameState.evidence && gameState.evidence.includes("assistant_key")
+                next: () => window.game.startInterrogation("secretary"),
+                condition: () => window.game.state.evidence && window.game.state.evidence.includes("assistant_key")
             },
             {
                 text: "Ochroniarz",
-                next: () => startInterrogation("guard"),
-                condition: () => gameState.cameraUnlocked
+                next: () => window.game.startInterrogation("guard"),
+                condition: () => window.game.state.cameraUnlocked
             },
             {
                 text: "Doktorant",
-                next: () => startInterrogation("phd"),
-                condition: () => gameState.evidence && gameState.evidence.includes("conflict_professors")
+                next: () => window.game.startInterrogation("phd"),
+                condition: () => window.game.state.evidence && window.game.state.evidence.includes("conflict_professors")
             }
         ]
     },
@@ -54,7 +54,7 @@ window.scenes = {
             { name: "Ty", text: "Zamek nie jest uszkodzony." },
             { name: "Ty", text: "Użyto klucza." }
         ],
-        action: () => addEvidence("key_access"),
+        action: () => window.game.addEvidence("key_access"),
         next: "cabinet"
     },
 
@@ -75,8 +75,8 @@ window.scenes = {
             { name: "Ty", text: "Trzeba koniecznie znaleźć tego profesora i go przesłuchać." }
         ],
         action: () => {
-            addEvidence("conflict_professors")
-            gameState.computerChecked = true
+            window.game.addEvidence("conflict_professors")
+            window.game.state.computerChecked = true
         },
         next: "computer"
     },
@@ -88,8 +88,8 @@ window.scenes = {
             { name: "Ty", text: "Trzeba znaleźć tego studenta i go przesłuchać." }
         ],
         action: () => {
-            addEvidence("student_motive")
-            gameState.computerChecked = true
+            window.game.addEvidence("student_motive")
+            window.game.state.computerChecked = true
         },
         next: "computer"
     },
@@ -100,8 +100,8 @@ window.scenes = {
             { name: "Ty", text: "Asystent wchodzi do gabinetu wieczorem." }
         ],
         action: () => {
-            addEvidence("camera_assistant")
-            addEvidence("camera_blind_spot")
+            window.game.addEvidence("camera_assistant")
+            window.game.addEvidence("camera_blind_spot")
         },
         next: "start"
     },
@@ -111,7 +111,7 @@ window.scenes = {
             { name: "Ty", text: "Szafka jest lekko uchylona." },
             { name: "Ty", text: "W środku kopia klucza." }
         ],
-        action: () => addEvidence("fake_key"),
+        action: () => window.game.addEvidence("fake_key"),
         next: "cabinet"
     },
 
@@ -120,7 +120,7 @@ window.scenes = {
             { name: "Ty", text: "Ktoś logował się późno." },
             { name: "Ty", text: "Godzina nie zgadza się zeznaniami studenta." }
         ],
-        action: () => addEvidence("student_lie"),
+        action: () => window.game.addEvidence("student_lie"),
         next: "computer"
     }
 
