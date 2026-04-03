@@ -161,7 +161,7 @@ class Game {
                 this.showCustomDialog(q.dialog, () => {
                     if (q.evidence) this.addEvidence(q.evidence)
                     if (q.unlockCamera) this.state.cameraUnlocked = true
-                    if (q.action) q.action(this)
+                    if (q.action) q.action()
 
                     this.showQuestions()
                 })
@@ -276,15 +276,31 @@ class Game {
 
         let text = ""
 
-        if (this.state.accused === "assistant") {
-            text = "Złapałeś prawdziwego złodzieja."
-        } else if (this.state.accused === "student") {
-            text = "To był zły wybór. Student jest niewinny."
-        } else if (this.state.accused === "professor2") {
-            text = "Profesor nie był winny."
+        if (gameState.accused === "assistant") {
+            text = "Złapałeś prawdziwego złodzieja.\n\n" +
+                "Asystent miał klucz do gabinetu i znał jego zabezpieczenia. " +
+                "Został zauważony wieczorem w pobliżu oraz uchwycony na nagraniach.\n\n" +
+                "Wykorzystał martwy punkt kamery, aby uniknąć wykrycia. " +
+                "Jako osoba zaufana wiedział, jak dostać się do manuskryptu bez wzbudzania podejrzeń.\n\n" +
+                "Motyw był prosty — pieniądze. Rękopis miał ogromną wartość i mógł zostać sprzedany na czarnym rynku."
+        } else if (gameState.accused === "student") {
+            text = "To był zły wybór. Student jest niewinny.\n\n" +
+                "Rzeczywiście był tego wieczoru na uczelni, ale nie mówił całej prawdy.\n\n" +
+                "Spotkał się z kimś w tajemnicy i nie chciał, żeby ktokolwiek się o tym dowiedział. " +
+                "Dlatego kręcił się w mniej uczęszczanej części budynku.\n\n" +
+                "Kiedy został zapytany o szczegóły, spanikował i skłamał o godzinie.\n\n" +
+                "Bał się konsekwencji prywatnych, nie prawnych.\n\n" +
+                "Nie miał klucza ani powodu, żeby kraść manuskrypt.\n" +
+                "Jego zachowanie było podejrzane, ale niezwiązane z przestępstwem."
+        }
+        else if (gameState.accused === "professor2") {
+            text = "Profesor nie był winny.\n\n" +
+                "Miał motyw, ale nie podjął żadnych działań.\n" +
+                "To nie on dopuścił się kradzieży."
         }
 
         endingText.textContent = text
     }
 }
-window.game = new Game()
+
+const game = new Game()

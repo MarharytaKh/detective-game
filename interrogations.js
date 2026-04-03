@@ -54,8 +54,8 @@ window.interrogations = {
                     { name: "Student", text: "...no dobra, może nie brzmi to najlepiej. Ale to prawda." }
                 ],
                 evidence: "student_evening",
-                action: (game) => {
-                    game.state.flags.studentSpoke = true
+                action: () => {
+                    gameState.flags.studentSpoke = true
                 }
             }
         ]
@@ -184,7 +184,8 @@ window.interrogations = {
     },
 
     phd: {
-        intro: [
+        phd: {
+            intro: [
                 { name: "Ty", text: "Chciałbym zadać kilka pytań." },
                 { name: "Doktorantka", text: "Jeśli chodzi o profesorów… lepiej uważać, ale spróbuję pomóc." },
                 { name: "Ty", text: "Słyszałem, że między nimi było coś więcej niż zwykła rywalizacja." },
