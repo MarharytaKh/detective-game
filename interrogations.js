@@ -55,7 +55,7 @@ window.interrogations = {
                 ],
                 evidence: "student_evening",
                 action: () => {
-                    gameState.flags.studentSpoke = true
+                    window.game.state.flags.studentSpoke = true
                 }
             }
         ]
@@ -184,7 +184,6 @@ window.interrogations = {
     },
 
     phd: {
-        phd: {
             intro: [
                 { name: "Ty", text: "Chciałbym zadać kilka pytań." },
                 { name: "Doktorantka", text: "Jeśli chodzi o profesorów… lepiej uważać, ale spróbuję pomóc." },
@@ -214,6 +213,6 @@ window.interrogations = {
                     evidence: "conflict_professors"
                 }
             ]
-        }
+        
     }
 }
