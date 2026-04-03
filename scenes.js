@@ -54,7 +54,7 @@ window.scenes = {
             { name: "Ty", text: "Zamek nie jest uszkodzony." },
             { name: "Ty", text: "Użyto klucza." }
         ],
-        action: () => window.game.addEvidence("key_access"),
+        action: (game) => game.addEvidence("key_access"),
         next: "cabinet"
     },
 

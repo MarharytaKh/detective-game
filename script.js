@@ -205,7 +205,7 @@ class Game {
 
         if (scene.dialog) {
             this.showCustomDialog(scene.dialog, () => {
-                if (scene.action) scene.action()
+                if (scene.action) scene.action(this)
                 this.showScene(scene.next)
             })
             return
@@ -215,7 +215,7 @@ class Game {
         this.textElement.textContent = scene.text
 
         scene.choices.forEach(choice => {
-            if (choice.condition && !choice.condition()) return
+            if (choice.condition && !choice.condition(this)) return
 
             const btn = document.createElement("button")
             btn.textContent = choice.text
