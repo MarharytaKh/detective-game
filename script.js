@@ -1,6 +1,20 @@
-console.log("scenes:", window.scenes)
+console.log("scenes:", window.scenes) // :contentReference[oaicite:0]{index=0}
 
-class Game {
+// ---------- STATE ----------
+class GameState {
+    constructor() {
+        this.evidence = []
+        this.computerChecked = false
+        this.cameraUnlocked = false
+        this.interrogation = { current: null }
+        this.flags = { studentSpoke: false }
+        this.askedQuestions = {}
+        this.accused = null
+    }
+}
+
+// ---------- UI ----------
+class UIManager {
     constructor() {
         this.textElement = document.getElementById("text")
         this.nameElement = document.getElementById("name")
@@ -18,10 +32,200 @@ class Game {
         this.music = document.getElementById("bgMusic")
         this.musicBtn = document.getElementById("musicBtn")
         this.musicIcon = document.getElementById("musicIcon")
+    }
+}
+
+// ---------- DIALOG ----------
+class DialogSystem {
+    constructor(ui) {
+        this.ui = ui
+        this.typingInterval = null
+    }
+
+    typeText(text, callback) {
+        if (this.typingInterval) clearInterval(this.typingInterval)
+
+        let i = 0
+        this.ui.textElement.textContent = ""
+
+        this.typingInterval = setInterval(() => {
+            this.ui.textElement.textContent += text[i]
+            i++
+
+            if (i >= text.length) {
+                clearInterval(this.typingInterval)
+                this.typingInterval = null
+                if (callback) callback()
+            }
+        }, 20)
+    }
+
+    showDialog(dialog, callback) {
+        this.ui.leftChoices.innerHTML = ""
+        let index = 0
+
+        const nextLine = () => {
+            const line = dialog[index]
+            this.ui.nameElement.textContent = line.name
+
+            this.typeText(line.text, () => {
+                const btn = document.createElement("button")
+                btn.textContent = "Dalej →"
+                btn.classList.add("dialogBtn")
+
+                btn.onclick = () => {
+                    index++
+                    if (index < dialog.length) nextLine()
+                    else callback()
+                }
+
+                this.ui.dialogChoices.innerHTML = ""
+                this.ui.dialogChoices.appendChild(btn)
+            })
+        }
+
+        nextLine()
+    }
+}
+
+// ---------- INTERROGATION ----------
+class InterrogationSystem {
+    constructor(game) {
+        this.game = game
+    }
+
+    start(name) {
+        const { ui, state, dialogSystem } = this.game
+
+        ui.suspectImg.src = this.game.characterImages[name] || ""
+        ui.suspectImg.style.display = "block"
+
+        if (name === "student") ui.game.style.backgroundImage = "url('images/fs.png')"
+        else if (name === "assistant") ui.game.style.backgroundImage = "url('images/ae.png')"
+        else if (name === "professor2") ui.game.style.backgroundImage = "url('images/fs.png')"
+
+        state.interrogation.current = name
+
+        dialogSystem.showDialog(
+            this.game.interrogations[name].intro,
+            () => this.showQuestions()
+        )
+    }
+
+    showQuestions() {
+        const { ui, state, dialogSystem } = this.game
+        const data = this.game.interrogations[state.interrogation.current]
+
+        ui.leftChoices.innerHTML = ""
+        ui.dialogChoices.innerHTML = ""
+
+        data.questions.forEach((q, index) => {
+            const key = state.interrogation.current + "_" + index
+
+            const btn = document.createElement("button")
+            btn.textContent = q.text
+            btn.classList.add("leftBtn")
+
+            if (state.askedQuestions[key]) btn.classList.add("asked")
+            else btn.classList.add("new")
+
+            btn.onclick = () => {
+                state.askedQuestions[key] = true
+
+                dialogSystem.showDialog(q.dialog, () => {
+                    if (q.evidence) this.game.addEvidence(q.evidence)
+                    if (q.unlockCamera) state.cameraUnlocked = true
+                    if (q.action) q.action()
+
+                    this.showQuestions()
+                })
+            }
+
+            ui.leftChoices.appendChild(btn)
+        })
+
+        const exitBtn = document.createElement("button")
+        exitBtn.textContent = "Zakończ rozmowę"
+        exitBtn.classList.add("leftBtn")
+        exitBtn.onclick = () => this.game.showScene("start")
+
+        ui.leftChoices.appendChild(exitBtn)
+    }
+}
+
+// ---------- SCENES ----------
+class SceneSystem {
+    constructor(game) {
+        this.game = game
+    }
+
+    show(name) {
+        const { ui, dialogSystem } = this.game
+        const scene = this.game.scenes[name]
+
+        ui.suspectImg.style.display = "none"
+
+        ui.detectiveImg.style.display = "block"
+        if (name === "mail_professor" || name === "mail_student") {
+            ui.detectiveImg.style.display = "none"
+        }
+
+        ui.leftChoices.innerHTML = ""
+        ui.dialogChoices.innerHTML = ""
+
+        if (["cabinet", "lock", "computer", "drawer", "computer_logs"].includes(name)) {
+            ui.game.style.backgroundImage = "url('images/po.png')"
+        } else if (name === "mail_professor") {
+            ui.game.style.backgroundImage = "url('images/mail_p.png')"
+        } else if (name === "mail_student") {
+            ui.game.style.backgroundImage = "url('images/mail_s.png')"
+        } else {
+            ui.game.style.backgroundImage = "url('images/kt.png')"
+        }
+
+        if (scene.dialog) {
+            dialogSystem.showDialog(scene.dialog, () => {
+                if (scene.action) scene.action(this.game)
+                this.show(scene.next)
+            })
+            return
+        }
+
+        ui.nameElement.textContent = ""
+        ui.textElement.textContent = scene.text
+
+        scene.choices.forEach(choice => {
+            if (choice.condition && !choice.condition(this.game)) return
+
+            const btn = document.createElement("button")
+            btn.textContent = choice.text
+            btn.classList.add("leftBtn")
+
+            btn.onclick = () => {
+                const next = typeof choice.next === "function"
+                    ? choice.next()
+                    : choice.next
+
+                if (typeof next === "string") this.show(next)
+            }
+
+            ui.leftChoices.appendChild(btn)
+        })
+    }
+}
+
+// ---------- MAIN GAME ----------
+class Game {
+    constructor() {
+        this.ui = new UIManager()
+        this.state = new GameState()
+        this.dialogSystem = new DialogSystem(this.ui)
+        this.interrogationSystem = new InterrogationSystem(this)
+        this.sceneSystem = new SceneSystem(this)
 
         this.scenes = window.scenes
         this.interrogations = window.interrogations
-        this.typingInterval = null
+
         this.isPlaying = false
 
         this.characterImages = {
@@ -32,15 +236,6 @@ class Game {
             secretary: "images/bk.png",
             guard: "images/guard.png",
             phd: "images/jp.png"
-        }
-
-        this.state = {
-            evidence: [],
-            computerChecked: false,
-            cameraUnlocked: false,
-            interrogation: { current: null },
-            flags: { studentSpoke: false },
-            askedQuestions: {}
         }
 
         this.evidenceDescriptions = {
@@ -59,19 +254,20 @@ class Game {
             fake_key: "Istnieje drugi klucz",
             night_entry: "Ktoś wszedł po godzinach",
         }
-        window.game = this   // ← ВОТ СЮДА
+
+        window.game = this
         this.init()
     }
 
     init() {
-        this.notebookBtn.onclick = () => this.panel.classList.remove("hidden")
-        this.closeBtn.onclick = () => this.panel.classList.add("hidden")
+        this.ui.notebookBtn.onclick = () => this.ui.panel.classList.remove("hidden")
+        this.ui.closeBtn.onclick = () => this.ui.panel.classList.add("hidden")
 
-        this.musicBtn.onclick = () => this.toggleMusic()
+        this.ui.musicBtn.onclick = () => this.toggleMusic()
 
-        this.startGameBtn.onclick = () => {
-            this.introScreen.style.display = "none"
-            this.music.play()
+        this.ui.startGameBtn.onclick = () => {
+            this.ui.introScreen.style.display = "none"
+            this.ui.music.play()
             this.isPlaying = true
         }
 
@@ -86,11 +282,11 @@ class Game {
 
     toggleMusic() {
         if (this.isPlaying) {
-            this.music.pause()
-            this.musicIcon.src = "images/sf.png"
+            this.ui.music.pause()
+            this.ui.musicIcon.src = "images/sf.png"
         } else {
-            this.music.play()
-            this.musicIcon.src = "images/so.png"
+            this.ui.music.play()
+            this.ui.musicIcon.src = "images/so.png"
         }
         this.isPlaying = !this.isPlaying
     }
@@ -113,158 +309,12 @@ class Game {
         })
     }
 
-    typeText(text, callback) {
-    
-        if (this.typingInterval) {
-            clearInterval(this.typingInterval)
-        }
-
-        let i = 0
-        this.textElement.textContent = ""
-
-        this.typingInterval = setInterval(() => {
-            this.textElement.textContent += text[i]
-            i++
-
-            if (i >= text.length) {
-                clearInterval(this.typingInterval)
-                this.typingInterval = null
-                if (callback) callback()
-            }
-        }, 20)
+    showScene(name) {
+        this.sceneSystem.show(name)
     }
 
     startInterrogation(name) {
-        this.suspectImg.src = this.characterImages[name] || ""
-        this.suspectImg.style.display = "block"
-
-        if (name === "student") this.game.style.backgroundImage = "url('images/fs.png')"
-        else if (name === "assistant") this.game.style.backgroundImage = "url('images/ae.png')"
-        else if (name === "professor2") this.game.style.backgroundImage = "url('images/fs.png')"
-
-        this.state.interrogation.current = name
-        this.showCustomDialog(this.interrogations[name].intro, () => this.showQuestions())
-    }
-
-    showQuestions() {
-        const data = this.interrogations[this.state.interrogation.current]
-
-        this.leftChoices.innerHTML = ""
-        this.dialogChoices.innerHTML = ""
-
-        data.questions.forEach((q, index) => {
-            const key = this.state.interrogation.current + "_" + index
-
-            const btn = document.createElement("button")
-            btn.textContent = q.text
-            btn.classList.add("leftBtn")
-
-            if (this.state.askedQuestions[key]) btn.classList.add("asked")
-            else btn.classList.add("new")
-
-            btn.onclick = () => {
-                this.state.askedQuestions[key] = true
-
-                this.showCustomDialog(q.dialog, () => {
-                    if (q.evidence) this.addEvidence(q.evidence)
-                    if (q.unlockCamera) this.state.cameraUnlocked = true
-                    if (q.action) q.action()
-
-                    this.showQuestions()
-                })
-            }
-
-            this.leftChoices.appendChild(btn)
-        })
-
-        const exitBtn = document.createElement("button")
-        exitBtn.textContent = "Zakończ rozmowę"
-        exitBtn.classList.add("leftBtn")
-        exitBtn.onclick = () => this.showScene("start")
-
-        this.leftChoices.appendChild(exitBtn)
-    }
-
-    showScene(name) {
-        this.suspectImg.style.display = "none"
-
-        const scene = this.scenes[name]
-        const detective = this.detectiveImg
-
-        detective.style.display = "block"
-
-        if (name === "mail_professor" || name === "mail_student") {
-            detective.style.display = "none"
-        }
-
-        this.leftChoices.innerHTML = ""
-        this.dialogChoices.innerHTML = ""
-
-        if (["cabinet", "lock", "computer", "drawer", "computer_logs"].includes(name)) {
-            this.game.style.backgroundImage = "url('images/po.png')"
-        } else if (name === "mail_professor") {
-            this.game.style.backgroundImage = "url('images/mail_p.png')"
-        } else if (name === "mail_student") {
-            this.game.style.backgroundImage = "url('images/mail_s.png')"
-        } else {
-            this.game.style.backgroundImage = "url('images/kt.png')"
-        }
-
-        if (scene.dialog) {
-            this.showCustomDialog(scene.dialog, () => {
-                if (scene.action) scene.action(this)
-                this.showScene(scene.next)
-            })
-            return
-        }
-
-        this.nameElement.textContent = ""
-        this.textElement.textContent = scene.text
-
-        scene.choices.forEach(choice => {
-            if (choice.condition && !choice.condition(this)) return
-
-            const btn = document.createElement("button")
-            btn.textContent = choice.text
-            btn.classList.add("leftBtn")
-
-            btn.onclick = () => {
-                const next = typeof choice.next === "function"
-                    ? choice.next()
-                    : choice.next
-
-                if (typeof next === "string") this.showScene(next)
-            }
-
-            this.leftChoices.appendChild(btn)
-        })
-    }
-
-    showCustomDialog(dialog, callback) {
-        this.leftChoices.innerHTML = ""
-        let index = 0
-
-        const nextLine = () => {
-            const line = dialog[index]
-            this.nameElement.textContent = line.name
-
-            this.typeText(line.text, () => {
-                const btn = document.createElement("button")
-                btn.textContent = "Dalej →"
-                btn.classList.add("dialogBtn")
-
-                btn.onclick = () => {
-                    index++
-                    if (index < dialog.length) nextLine()
-                    else callback()
-                }
-
-                this.dialogChoices.innerHTML = ""
-                this.dialogChoices.appendChild(btn)
-            })
-        }
-
-        nextLine()
+        this.interrogationSystem.start(name)
     }
 
     showEnding() {
@@ -274,10 +324,10 @@ class Game {
 
         document.getElementById("suspectsPanel").classList.add("hidden")
 
-        this.leftChoices.innerHTML = ""
-        this.dialogChoices.innerHTML = ""
-        this.nameElement.textContent = ""
-        this.textElement.textContent = ""
+        this.ui.leftChoices.innerHTML = ""
+        this.ui.dialogChoices.innerHTML = ""
+        this.ui.nameElement.textContent = ""
+        this.ui.textElement.textContent = ""
 
         endingScreen.classList.remove("hidden")
 
