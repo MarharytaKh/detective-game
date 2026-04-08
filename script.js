@@ -21,7 +21,7 @@ class Game {
 
         this.scenes = window.scenes
         this.interrogations = window.interrogations
-
+        this.typingInterval = null
         this.isPlaying = false
 
         this.characterImages = {
@@ -114,15 +114,22 @@ class Game {
     }
 
     typeText(text, callback) {
+    
+        if (this.typingInterval) {
+            clearInterval(this.typingInterval)
+        }
+
         let i = 0
         this.textElement.textContent = ""
 
-        const interval = setInterval(() => {
+        this.typingInterval = setInterval(() => {
             this.textElement.textContent += text[i]
             i++
+
             if (i >= text.length) {
-                clearInterval(interval)
-                callback()
+                clearInterval(this.typingInterval)
+                this.typingInterval = null
+                if (callback) callback()
             }
         }, 20)
     }
