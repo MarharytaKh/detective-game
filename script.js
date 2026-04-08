@@ -1,6 +1,5 @@
 console.log("scenes:", window.scenes) // :contentReference[oaicite:0]{index=0}
 
-// ---------- STATE ----------
 class GameState {
     constructor() {
         this.evidence = []
@@ -13,7 +12,6 @@ class GameState {
     }
 }
 
-// ---------- UI ----------
 class UIManager {
     constructor() {
         this.textElement = document.getElementById("text")
@@ -35,7 +33,6 @@ class UIManager {
     }
 }
 
-// ---------- DIALOG ----------
 class DialogSystem {
     constructor(ui) {
         this.ui = ui
@@ -88,7 +85,6 @@ class DialogSystem {
     }
 }
 
-// ---------- INTERROGATION ----------
 class InterrogationSystem {
     constructor(game) {
         this.game = game
@@ -153,7 +149,6 @@ class InterrogationSystem {
     }
 }
 
-// ---------- SCENES ----------
 class SceneSystem {
     constructor(game) {
         this.game = game
@@ -214,7 +209,6 @@ class SceneSystem {
     }
 }
 
-// ---------- MAIN GAME ----------
 class Game {
     constructor() {
         this.ui = new UIManager()
