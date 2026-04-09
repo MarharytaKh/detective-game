@@ -1,4 +1,5 @@
 window.interrogations = {
+
     student: {
         intro: [
             { name: "Ty", text: "Cześć, musimy pogadać. Wszystko w porządku, ale muszę zadać ci kilka pytań." },
@@ -11,6 +12,7 @@ window.interrogations = {
         ],
         questions: [
             {
+                id: "student_why_manuscript",
                 text: "Dlaczego interesowałeś się manuskryptem?",
                 dialog: [
                     { name: "Ty", text: "Wysłałeś maila z prośbą o dostęp.Widziałem twoje prośby w wiadomościach e-mail profesora." },
@@ -20,6 +22,7 @@ window.interrogations = {
                 ]
             },
             {
+                id: "student_where_evening",
                 text: "Gdzie byłeś wieczorem?",
                 dialog: [
                     { name: "Ty", text: "Gdzie byłeś wieczorem w dniu zaginięcia?" },
@@ -30,10 +33,28 @@ window.interrogations = {
                     { name: "Ty", text: "A drugi współlokator? Przecież nie mieszkasz sam, prawda?" },
                     { name: "Student", text: "Nie, mam współlokatora. Ale mój sąsiad to straszny imprezowicz i wrócił z klubu nad ranem, więc nic nie wie i nic nie powie." },
                     { name: "Ty", text: "Rozumiem." }
-                ]
+                ],
+                action: () => {
+                    window.game.state.flags.studentSpoke = true
+                }
             },
             {
+                id: "student_why_here",
+                text: "Dlaczego tam byłeś?",
+                requires: ["student_where_evening"],
+                requiresHint: "Najpierw zapytaj, gdzie był wieczorem.",
+                dialog: [
+                    { name: "Student", text: "Skracałem drogę." },
+                    { name: "Ty", text: "O tej godzinie?" },
+                    { name: "Student", text: "...no dobra, może nie brzmi to najlepiej. Ale to prawda." }
+                ],
+                evidence: "student_evening"
+            },
+            {
+                id: "student_seen_someone",
                 text: "Co widziałeś przy gabinecie?",
+                requires: ["student_why_here"],
+                requiresHint: "Najpierw zapytaj, dlaczego tam był.",
                 dialog: [
                     { name: "Ty", text: "Nie masz już nic do powiedzenia, może widziałeś kogoś podejrzanego?" },
                     { name: "Student", text: "*jest zdenerwowany*..." },
@@ -45,18 +66,6 @@ window.interrogations = {
                     { name: "Student", text: "Nie, nie, nie chcę iść do więzienia. No dobrze. Co mi do tego. Widziałem, jak asystent profesora nerwowo kręcił się w skrzydle, w którym znajduje się gabinet. Więcej nie mam do powiedzenia." }
                 ],
                 evidence: "assistant_evening"
-            },
-            {
-                text: "Dlaczego tam byłeś?",
-                dialog: [
-                    { name: "Student", text: "Skracałem drogę." },
-                    { name: "Ty", text: "O tej godzinie?" },
-                    { name: "Student", text: "...no dobra, może nie brzmi to najlepiej. Ale to prawda." }
-                ],
-                evidence: "student_evening",
-                action: () => {
-                    window.game.state.flags.studentSpoke = true
-                }
             }
         ]
     },
@@ -67,11 +76,12 @@ window.interrogations = {
             { name: "Asystent", text: "Oczywiście, proszę bardzo, mamy wystarczająco dużo czasu." },
             { name: "Ty", text: "Świetnie. Jest pan asystentem profesora historii sztuki, prawda?" },
             { name: "Asystent", text: "Tak" },
-            { name: "Ty", text: "Czy mogę odtąd zwracać się do Pana na „ty”?" },
+            { name: "Ty", text: "Czy mogę odtąd zwracać się do Pana na „ty\"?" },
             { name: "Asystent", text: "Tak, jasne" }
         ],
         questions: [
             {
+                id: "assistant_has_key",
                 text: "Masz klucz do gabinetu?",
                 dialog: [
                     { name: "Ty", text: "Masz klucz do gabinetu, prawda?" },
@@ -82,7 +92,15 @@ window.interrogations = {
                 evidence: "assistant_key"
             },
             {
+                id: "assistant_evening",
                 text: "Byłeś w gabinecie wieczorem?",
+                requires: ["assistant_has_key"],
+                requiresHint: "Najpierw zapytaj o klucz.",
+                condition: () => {
+                    const ev = window.game.state.evidence
+                    return ev.includes("assistant_evening") || ev.includes("camera_assistant")
+                },
+                conditionHint: "Potrzebujesz dowodu że asystent był wieczorem przy gabinecie — zeznania świadka albo nagrania z kamery.",
                 dialog: [
                     { name: "Ty", text: "Zauważono cię w korytarzu przy gabinecie" },
                     { name: "Asystent", text: "Byłem tam, tak,to prawda" },
@@ -91,11 +109,14 @@ window.interrogations = {
                 ]
             },
             {
+                id: "assistant_alibi",
                 text: "Czy ktoś może to potwierdzić?",
+                requires: ["assistant_evening"],
+                requiresHint: "Najpierw zapytaj, czy był wieczorem przy gabinecie.",
                 dialog: [
                     { name: "Asystent", text: "Niestety nie, bo sam dobrze wiesz, że w gabinetach nie nagrywa się rozmów ze względu na poufność." }
                 ]
-            },
+            }
         ]
     },
 
@@ -108,7 +129,7 @@ window.interrogations = {
         ],
         questions: [
             {
-                text: "Dlaczego chciał Pan manuskrypt?",
+                id: "prof2_motive",
                 dialog: [
                     { name: "Ty", text: "Prosił Pan o dostęp do artefaktu." },
                     { name: "Profesor", text: "To naturalne w pracy naukowej." },
@@ -118,31 +139,15 @@ window.interrogations = {
                 evidence: "conflict_professors"
             },
             {
-                text: "Czy był Pan zdenerwowany?",
-                dialog: [
-                    { name: "Ty", text: "Reakcja była dość emocjonalna." },
-                    { name: "Profesor", text: "To poważna sprawa." },
-                    { name: "Ty", text: "(Może coś ukrywa... albo nie.)" }
-                ],
-                evidence: "professor_nervous"
-            },
-            {
-                text: "Kiedy Pan wyszedł z uczelni?",
+                id: "prof2_when_left",
+                text: "Kiedy Pan wyszedł?",
                 dialog: [
                     { name: "Ty", text: "Dokładna godzina?" },
                     { name: "Profesor", text: "Około 18:00." },
                     { name: "Ty", text: "Można to zweryfikować?" },
-                    { name: "Profesor", text: "Tak. Kamery przy wyjściu." },
-                    { name: "Ty", text: "(To otwiera dostęp do nagrań.)" }
+                    { name: "Profesor", text: "Tak. Kamery przy wyjściu." }
                 ],
                 unlockCamera: true
-            },
-            {
-                text: "Czy miał Pan dostęp do gabinetu?",
-                dialog: [
-                    { name: "Profesor", text: "Nie posiadałem klucza." },
-                    { name: "Ty", text: "(Czyli ktoś inny musiał wejść.)" }
-                ]
             }
         ]
     },
@@ -154,6 +159,7 @@ window.interrogations = {
         ],
         questions: [
             {
+                id: "librarian_student",
                 text: "Student wieczorem",
                 dialog: [
                     { name: "Ty", text: "Jeden ze studentów, Piotr Lojoński, twierdził, że był w bibliotece wczoraj wieczorem. Proszę o potwierdzenie lub zaprzeczenie tej informacji." },
@@ -171,7 +177,8 @@ window.interrogations = {
         ],
         questions: [
             {
-                text: "Klucze",
+                id: "secretary_keys",
+                text: "Ile jest kluczy?",
                 dialog: [
                     { name: "Ty", text: "Interesuje mnie, kto posiada klucze do gabinetu 302b i ile jest ich kopii?" },
                     { name: "Sekretarka", text: "Są w sumie trzy: jedno należy do profesora, drugie przypisano jego asystentowi, ponieważ pracują razem, a asystent nie ma innego miejsca pracy." },
@@ -179,40 +186,50 @@ window.interrogations = {
                     { name: "Sekretarka", text: "Przechowywany w sejfie " }
                 ],
                 evidence: "fake_key"
+            },
+            {
+                id: "secretary_missing_key",
+                text: "Domyśliam się, że klucz zniknął?",
+                requires: ["secretary_keys"],
+                dialog: [
+                    { name: "Sekretarka", text: "Tak." }
+                ],
+                evidence: "third_key_stolen"
             }
         ]
     },
 
     phd: {
-            intro: [
-                { name: "Ty", text: "Chciałbym zadać kilka pytań." },
-                { name: "Doktorantka", text: "Jeśli chodzi o profesorów… lepiej uważać, ale spróbuję pomóc." },
-                { name: "Ty", text: "Słyszałem, że między nimi było coś więcej niż zwykła rywalizacja." },
-                { name: "Doktorantka", text: "To się ciągnie od lat." }
-            ],
-            questions: [
-                {
-                    text: "Co dokładnie się wydarzyło?",
-                    dialog: [
-                        { name: "Doktorantka", text: "Kilka lat temu prowadzili wspólny projekt. Duży grant, publikacja w prestiżowym czasopiśmie..." },
-                        { name: "Ty", text: "I?" },
-                        { name: "Doktorantka", text: "Wyniki… nie zgadzały się z hipotezą. Profesor filologii chciał je opublikować tak, jak są." },
-                        { name: "Ty", text: "A drugi profesor?" },
-                        { name: "Doktorantka", text: "Naciskał, żeby „doprecyzować” dane. Korekty, które poprawiały narrację." },
-                        { name: "Ty", text: "Czyli manipulacja?" },
-                        { name: "Doktorantka", text: "Oficjalnie — „interpretacja”. Nieoficjalnie… przesunięto kilka punktów, żeby wyglądało lepiej." },
-                        { name: "Ty", text: "Zostało to wykryte?" },
-                        { name: "Doktorantka", text: "Tak. Recenzenci to wyłapali. Publikacja została wstrzymana, grant cofnięto." },
-                        { name: "Ty", text: "Kto poniósł konsekwencje?" },
-                        { name: "Doktorantka", text: "Formalnie obaj. Ale to profesor od manuskryptu wziął winę na siebie, żeby nie pogrążyć zespołu." },
-                        { name: "Ty", text: "A prywatnie?" },
-                        { name: "Doktorantka", text: "Od tamtej pory mu nie ufał. Mówił, że tamten potrafi nagiąć zasady, kiedy bardzo czegoś chce." },
-                        { name: "Ty", text: "Czyli konflikt nie zniknął." },
-                        { name: "Doktorantka", text: "Nie. Był tylko… przykryty. Do czasu." }
-                    ],
-                    evidence: "conflict_professors"
-                }
-            ]
-        
+        intro: [
+            { name: "Ty", text: "Chciałbym zadać kilka pytań." },
+            { name: "Doktorantka", text: "Jeśli chodzi o profesorów… lepiej uważać, ale spróbuję pomóc." },
+            { name: "Ty", text: "Słyszałem, że między nimi było coś więcej niż zwykła rywalizacja." },
+            { name: "Doktorantka", text: "To się ciągnie od lat." }
+        ],
+        questions: [
+            {
+                id: "phd_conflict",
+                text: "Co się stało?",
+                dialog: [
+                    { name: "Doktorantka", text: "Kilka lat temu prowadzili wspólny projekt. Duży grant, publikacja w prestiżowym czasopiśmie..." },
+                    { name: "Ty", text: "I?" },
+                    { name: "Doktorantka", text: "Wyniki… nie zgadzały się z hipotezą. Profesor filologii chciał je opublikować tak, jak są." },
+                    { name: "Ty", text: "A drugi profesor?" },
+                    { name: "Doktorantka", text: "Naciskał, żeby „doprecyzować” dane. Korekty, które poprawiały narrację." },
+                    { name: "Ty", text: "Czyli manipulacja?" },
+                    { name: "Doktorantka", text: "Oficjalnie — „interpretacja”. Nieoficjalnie… przesunięto kilka punktów, żeby wyglądało lepiej." },
+                    { name: "Ty", text: "Zostało to wykryte?" },
+                    { name: "Doktorantka", text: "Tak. Recenzenci to wyłapali. Publikacja została wstrzymana, grant cofnięto." },
+                    { name: "Ty", text: "Kto poniósł konsekwencje?" },
+                    { name: "Doktorantka", text: "Formalnie obaj. Ale to profesor od manuskryptu wziął winę na siebie, żeby nie pogrążyć zespołu." },
+                    { name: "Ty", text: "A prywatnie?" },
+                    { name: "Doktorantka", text: "Od tamtej pory mu nie ufał. Mówił, że tamten potrafi nagiąć zasady, kiedy bardzo czegoś chce." },
+                    { name: "Ty", text: "Czyli konflikt nie zniknął." },
+                    { name: "Doktorantka", text: "Nie. Był tylko… przykryty. Do czasu." }
+                ],
+                evidence: "conflict_professors"
+            }
+        ]
     }
+
 }

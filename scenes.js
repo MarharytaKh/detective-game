@@ -27,11 +27,6 @@ window.scenes = {
                 condition: () => window.game.state.evidence && window.game.state.evidence.includes("assistant_key")
             },
             {
-                text: "Ochroniarz",
-                next: () => window.game.startInterrogation("guard"),
-                condition: () => window.game.state.cameraUnlocked
-            },
-            {
                 text: "Doktorant",
                 next: () => window.game.startInterrogation("phd"),
                 condition: () => window.game.state.evidence && window.game.state.evidence.includes("conflict_professors")
@@ -111,14 +106,13 @@ window.scenes = {
             { name: "Ty", text: "Szafka jest lekko uchylona." },
             { name: "Ty", text: "W środku kopia klucza." }
         ],
-        action: () => window.game.addEvidence("fake_key"),
+        action: () => window.game.addEvidence("drawer_key"),
         next: "cabinet"
     },
 
     computer_logs: {
         dialog: [
-            { name: "Ty", text: "Ktoś logował się późno." },
-            { name: "Ty", text: "Godzina nie zgadza się zeznaniami studenta." }
+            { name: "Ty", text: "Ktoś logował się późno wieczorem." }
         ],
         action: () => window.game.addEvidence("student_lie"),
         next: "computer"

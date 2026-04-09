@@ -124,6 +124,31 @@ class InterrogationSystem {
 
             if (state.askedQuestions[key]) btn.classList.add("asked")
             else btn.classList.add("new")
+            
+            if (q.requires) {
+                const missing = q.requires.some(req => {
+                    return !Object.keys(state.askedQuestions)
+                        .some(k => k.startsWith(state.interrogation.current) && k.includes(req))
+                })
+
+                if (missing) {
+                    btn.classList.add("locked")
+                    btn.onclick = () => {
+                        alert(q.requiresHint || "To pytanie jest zablokowane")
+                    }
+                    ui.leftChoices.appendChild(btn)
+                    return
+                }
+            }
+
+            if (q.condition && !q.condition()) {
+                btn.classList.add("locked")
+                btn.onclick = () => {
+                    alert(q.conditionHint || "Brak warunku")
+                }
+                ui.leftChoices.appendChild(btn)
+                return
+            }
 
             btn.onclick = () => {
                 state.askedQuestions[key] = true
