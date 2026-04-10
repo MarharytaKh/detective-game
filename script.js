@@ -30,6 +30,7 @@ class UIManager {
         this.music = document.getElementById("bgMusic")
         this.musicBtn = document.getElementById("musicBtn")
         this.musicIcon = document.getElementById("musicIcon")
+        this.volumeSlider = document.getElementById("volumeSlider")
     }
 }
 
@@ -284,6 +285,37 @@ class Game {
 
         this.ui.musicBtn.onclick = () => this.toggleMusic()
 
+        const slider = this.ui.volumeSlider
+
+        const updateSlider = () => {
+            const percent = slider.value
+
+            const start = 6
+            const end = 93
+
+            const value = start + (end - start) * percent
+
+            slider.style.background = `
+    linear-gradient(to right,
+        transparent ${start}%,
+        lime ${start}%,
+        lime ${value}%,
+        transparent ${value}%),
+    url("images/bnslts.png")
+`
+
+            slider.style.backgroundSize = "100% 6px, 100% 100%"
+            slider.style.backgroundPosition = "center, center"
+            slider.style.backgroundRepeat = "no-repeat"
+        }
+
+        slider.oninput = () => {
+            this.ui.music.volume = slider.value
+            updateSlider()
+        }
+
+        
+
         this.ui.startGameBtn.onclick = () => {
             this.ui.introScreen.style.display = "none"
             this.ui.music.play()
@@ -294,7 +326,7 @@ class Game {
             this.state.accused = person
             this.showEnding()
         }
-
+        updateSlider()
         this.updateEvidenceUI()
         this.showScene("start")
     }

@@ -307,3 +307,38 @@ body {
         width: 35px;
         height: 35px;
     }
+#volumeSlider {
+    position: absolute;
+    bottom: 50px;
+    left: 50px;
+    width: 150px;
+    z-index: 3000;
+}
+#volumeSlider {
+    position: absolute;
+    bottom: 50px;
+    left: 50px;
+    width: 200px;
+    height: 20px;
+    appearance: none;
+    background: url("images/bnslts.png");
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    cursor: pointer;
+    z-index: 3000;
+}
+    #volumeSlider::-webkit-slider-runnable-track {
+        height: 20px;
+        background: transparent;
+    }
+    #volumeSlider::-webkit-slider-thumb {
+        appearance: none;
+        width: 30px;
+        height: 20px;
+        background: url("images/bnsltso.png");
+        background-size: contain;
+        background-repeat: no-repeat;
+        margin-top: 0px;
+
+        cursor: pointer;
+    }
