@@ -1,13 +1,33 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pl">
 <head>
 <meta charset="UTF-8">
 <title>Detective VN</title>
 <link rel="stylesheet" href="style.css">
+
+<!-- Data files (no class deps, define window.interrogations / window.scenes) -->
 <script src="interrogations.js" defer></script>
 <script src="scenes.js" defer></script>
-<script src="script.js" defer></script>
 
+<!-- Core layer -->
+<script src="GameState.js" defer></script>
+<script src="UIManager.js" defer></script>
+
+<!-- Feature systems (depend only on GameState / UIManager) -->
+<script src="EvidenceSystem.js" defer></script>
+<script src="DialogSystem.js" defer></script>
+<script src="MusicSystem.js" defer></script>
+<script src="EndingSystem.js" defer></script>
+
+<!-- Facade for data files -->
+<script src="GameAPI.js" defer></script>
+
+<!-- High-level systems (depend on the systems above) -->
+<script src="InterrogationSystem.js" defer></script>
+<script src="SceneSystem.js" defer></script>
+
+<!-- Composition root -->
+<script src="Game.js" defer></script>
 </head>
 <body>
 
@@ -20,13 +40,12 @@
 </button>
 
 <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="1">
+
     <div id="introScreen">
-
         <img src="images/sr.png" id="introImage">
-
         <button id="startGameBtn">Zamknij</button>
-
     </div>
+
     <!-- PANEL DOWODÓW -->
     <div id="evidencePanel">
         <h3>Dowody</h3>
@@ -35,10 +54,10 @@
 
     <img id="notebookIMG" src="images/pd.png">
     <img id="notebookBtn" src="images/bn.png">
-    
+
     <img id="pintableIMG" src="images/ds.png">
     <div id="leftChoices"></div>
-    
+
     <div id="dialogChoices"></div>
     <div id="characters">
         <img id="detective" src="images/gd.png">
@@ -50,38 +69,29 @@
     </div>
 
     <div id="suspectsPanel" class="hidden">
-
-    <div id="suspectsContent">
-
-    <div class="suspect">
-        <img src="images/sus1.png">
-        <button class="leftBtn" onclick="accuse('student')">Oskarżyć</button>
+        <div id="suspectsContent">
+            <div class="suspect">
+                <img src="images/sus1.png">
+                <button class="leftBtn" onclick="accuse('student')">Oskarżyć</button>
+            </div>
+            <div class="suspect">
+                <img src="images/sus2.png">
+                <button class="leftBtn" onclick="accuse('assistant')">Oskarżyć</button>
+            </div>
+            <div class="suspect">
+                <img src="images/sus3.png">
+                <button class="leftBtn" onclick="accuse('professor2')">Oskarżyć</button>
+            </div>
+        </div>
+        <button id="closeSuspects">Zamknij</button>
     </div>
 
-    <div class="suspect">
-        <img src="images/sus2.png">
-        <button class="leftBtn" onclick="accuse('assistant')">Oskarżyć</button>
+    <div id="endingScreen" class="hidden">
+        <div id="endingText"></div>
+        <button onclick="location.reload()" class="dialogBtn">Zagraj ponownie</button>
     </div>
-
-    <div class="suspect">
-        <img src="images/sus3.png">
-        <button class="leftBtn" onclick="accuse('professor2')">Oskarżyć</button>
-    </div>
-
-</div>
-
-    <button id="closeSuspects">Zamknij</button>
-</div>
-
-<!-- ВНЕ панели -->
-<div id="endingScreen" class="hidden">
-    <div id="endingText"></div>
-    <button onclick="location.reload()" class="dialogBtn">Zagraj ponownie</button>
-</div>
 
 </div>
 
 </body>
 </html>
-
-
