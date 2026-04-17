@@ -1,13 +1,3 @@
-/**
- * EndingSystem — показывает финальный экран.
- *
- * Тексты концовок приходят из window.storyEndings (выставляется StoryPicker),
- * поэтому EndingSystem не знает о конкретных сценариях.
- *
- * SRP: только отображение финала.
- * OCP: текст финала — снаружи; класс не меняется при добавлении новых сценариев.
- * DIP: принимает UIManager через конструктор.
- */
 class EndingSystem {
     /** @param {UIManager} ui */
     constructor(ui) {
@@ -16,8 +6,6 @@ class EndingSystem {
         this.textElement  = document.getElementById("endingText")
         this.charactersEl = document.getElementById("characters")
     }
-
-    // --- Public API --------------------------------------------------------
 
     /** @param {string} accused  Ключ обвиняемого */
     show(accused) {
