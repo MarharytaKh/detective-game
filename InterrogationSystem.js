@@ -5,6 +5,8 @@ class InterrogationSystem {
         professor2: "images/fs.png",
     }
 
+    static TIMER_DURATION = 90  // seconds per interrogation
+
     /**
      * @param {UIManager}      ui
      * @param {GameState}      state
@@ -22,9 +24,88 @@ class InterrogationSystem {
         this.characterImages = characterImages
         this.interrogations  = interrogations
         this.onExit          = onExit
+
+        this._timerInterval  = null
+        this._timeLeft       = 0
+        this._timerEl        = document.getElementById("interrogationTimer")
+        this._timerFill      = document.getElementById("timerFill")
+        this._timerText      = document.getElementById("timerText")
     }
 
-   
+    _startTimer() {
+        this._stopTimer()
+        this._timeLeft = InterrogationSystem.TIMER_DURATION
+        this._updateTimerUI()
+        this._timerEl.classList.remove("hidden")
+
+        this._timerInterval = setInterval(() => {
+            this._timeLeft--
+            this._updateTimerUI()
+
+            if (this._timeLeft <= 0) {
+                this._stopTimer()
+                this._onTimerExpired()
+            }
+        }, 1000)
+    }
+
+    _pauseTimer() {
+        if (this._timerInterval) {
+            clearInterval(this._timerInterval)
+            this._timerInterval = null
+        }
+    }
+
+    _resumeTimer() {
+        if (this._timeLeft > 0 && !this._timerInterval) {
+            this._timerInterval = setInterval(() => {
+                this._timeLeft--
+                this._updateTimerUI()
+                if (this._timeLeft <= 0) {
+                    this._stopTimer()
+                    this._onTimerExpired()
+                }
+            }, 1000)
+        }
+    }
+
+    _stopTimer() {
+        clearInterval(this._timerInterval)
+        this._timerInterval = null
+        if (this._timerEl) this._timerEl.classList.add("hidden")
+    }
+
+    _updateTimerUI() {
+        if (!this._timerText || !this._timerFill) return
+        const pct = this._timeLeft / InterrogationSystem.TIMER_DURATION
+
+        this._timerText.textContent = this._timeLeft + "s"
+
+        // Color shifts: green → yellow → red
+        const hue = Math.round(pct * 120)
+        this._timerFill.style.width      = (pct * 100) + "%"
+        this._timerFill.style.background = `hsl(${hue}, 90%, 45%)`
+
+        // Pulse when low
+        if (this._timeLeft <= 15) {
+            this._timerEl.classList.add("timer-urgent")
+        } else {
+            this._timerEl.classList.remove("timer-urgent")
+        }
+    }
+
+    _onTimerExpired() {
+        this.ui.clearChoices()
+        this.ui.setName("Ty")
+        this.ui.setText("Czas minął. Podejrzany odmawia dalszej rozmowy.")
+
+        const btn = document.createElement("button")
+        btn.textContent = "Odejdź"
+        btn.classList.add("dialogBtn")
+        btn.onclick = () => this.onExit()
+        this.ui.dialogChoices.innerHTML = ""
+        this.ui.dialogChoices.appendChild(btn)
+    }
 
     /** @param {string} name*/
     start(name) {
@@ -35,9 +116,13 @@ class InterrogationSystem {
 
         this.state.interrogation.current = name
 
+        // Intro plays without timer — start timer after intro
         this.dialogSystem.showDialog(
             this.interrogations[name].intro,
-            () => this._showQuestions()
+            () => {
+                this._startTimer()
+                this._showQuestions()
+            }
         )
     }
 
@@ -46,6 +131,7 @@ class InterrogationSystem {
         const data = this.interrogations[name]
 
         this.ui.clearChoices()
+        this._resumeTimer()
 
         data.questions.forEach((q, index) => {
             const key = q.id ? `${name}_${q.id}` : `${name}_${index}`
@@ -90,13 +176,14 @@ class InterrogationSystem {
 
     _askQuestion(q, key) {
         this.state.markQuestionAsked(key)
+        this._pauseTimer()  // pause while dialog plays
 
         this.dialogSystem.showDialog(q.dialog, () => {
             if (q.evidence)      this.evidenceSystem.add(q.evidence)
             if (q.unlockCamera)  this.state.cameraUnlocked = true
             if (q.action)        q.action()
 
-            this._showQuestions()
+            this._showQuestions()  // _resumeTimer called inside _showQuestions
         })
     }
 
@@ -104,7 +191,10 @@ class InterrogationSystem {
         const btn       = document.createElement("button")
         btn.textContent = "Zakończ rozmowę"
         btn.classList.add("leftBtn")
-        btn.onclick     = () => this.onExit()
+        btn.onclick     = () => {
+            this._stopTimer()
+            this.onExit()
+        }
         return btn
     }
 }
