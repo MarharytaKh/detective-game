@@ -40,8 +40,6 @@ class Game {
         )
 
         window.game   = this
-        window.accuse = (person) => this.accuse(person)
-
         this._bindEvents()
         this.evidenceSystem.init()
         this.showScene("start")
@@ -59,6 +57,10 @@ class Game {
     }
 
     accuse(person) {
+        if (this.state.evidence.length < 3) {
+            alert("Masz za mało dowodów, żeby kogoś oskarżyć!")
+            return
+        }
         this.state.accused = person
         this.endingSystem.show(person)
     }
@@ -72,6 +74,10 @@ class Game {
             this.ui.introScreen.style.display = "none"
             this.musicSystem.play()
         }
+
+        document.querySelectorAll(".leftBtn[data-accuse]").forEach(btn => {
+            btn.addEventListener("click", () => this.accuse(btn.dataset.accuse))
+        })
     }
 }
 

@@ -48,7 +48,7 @@ class InterrogationSystem {
         this.ui.clearChoices()
 
         data.questions.forEach((q, index) => {
-            const key = `${name}_${index}`
+            const key = q.id ? `${name}_${q.id}` : `${name}_${index}`
             const btn = this._createQuestionButton(q, key, name)
             this.ui.leftChoices.appendChild(btn)
         })
@@ -84,7 +84,7 @@ class InterrogationSystem {
     _isMissingRequires(q, name) {
         if (!q.requires) return false
         return q.requires.some(
-            req => !this.state.wasQuestionAskedFor(name, req)
+            req => !this.state.isQuestionAsked(`${name}_${req}`)
         )
     }
 

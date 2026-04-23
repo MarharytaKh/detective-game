@@ -130,6 +130,7 @@ window.interrogations = {
         questions: [
             {
                 id: "prof2_motive",
+                text: "Dlaczego chciał Pan dostępu?",
                 dialog: [
                     { name: "Ty", text: "Prosił Pan o dostęp do artefaktu." },
                     { name: "Profesor", text: "To naturalne w pracy naukowej." },

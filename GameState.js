@@ -37,8 +37,6 @@ class GameState {
 
 
     wasQuestionAskedFor(characterName, questionId) {
-        return Object.keys(this.askedQuestions).some(
-            k => k.startsWith(characterName) && k.includes(questionId)
-        )
+        return !!this.askedQuestions[`${characterName}_${questionId}`]
     }
 }
