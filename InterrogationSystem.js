@@ -5,7 +5,7 @@ class InterrogationSystem {
         professor2: "images/fs.png",
     }
 
-    static TIMER_DURATION = 90  // seconds per interrogation
+    static TIMER_DURATION = 60
 
     /**
      * @param {UIManager}      ui
@@ -97,7 +97,7 @@ class InterrogationSystem {
     _onTimerExpired() {
         this.ui.clearChoices()
         this.ui.setName("Ty")
-        this.ui.setText("Czas minął. Podejrzany odmawia dalszej rozmowy.")
+        this.ui.setText("Czas minął. Przesłuchiwany odmawia dalszej rozmowy.")
 
         const btn = document.createElement("button")
         btn.textContent = "Odejdź"
@@ -131,7 +131,6 @@ class InterrogationSystem {
         const data = this.interrogations[name]
 
         this.ui.clearChoices()
-        this._resumeTimer()
 
         data.questions.forEach((q, index) => {
             const key = q.id ? `${name}_${q.id}` : `${name}_${index}`
@@ -176,7 +175,6 @@ class InterrogationSystem {
 
     _askQuestion(q, key) {
         this.state.markQuestionAsked(key)
-        this._pauseTimer()  // pause while dialog plays
 
         this.dialogSystem.showDialog(q.dialog, () => {
             if (q.evidence)      this.evidenceSystem.add(q.evidence)
