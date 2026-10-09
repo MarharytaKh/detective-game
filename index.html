@@ -1,111 +1,109 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pl">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Marharyta Khursik — Portfolio</title>
-<link href="https://fonts.googleapis.com/css2?family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<title>Detective VN</title>
 <link rel="stylesheet" href="style.css">
+
+<!-- Data files (no class deps, define window.interrogations / window.scenes) -->
+<script src="interrogations.js" defer></script>
+<script src="scenes.js" defer></script>
+
+<!-- Story variants & random picker (must run before Game.js) -->
+<script src="StoryVariants.js" defer></script>
+<script src="StoryPicker.js" defer></script>
+
+<!-- Core layer -->
+<script src="GameState.js" defer></script>
+<script src="UIManager.js" defer></script>
+
+<!-- Feature systems (depend only on GameState / UIManager) -->
+<script src="EvidenceSystem.js" defer></script>
+<script src="DialogSystem.js" defer></script>
+<script src="MusicSystem.js" defer></script>
+<script src="EndingSystem.js" defer></script>
+
+<!-- Facade for data files -->
+<script src="GameAPI.js" defer></script>
+
+<!-- High-level systems (depend on the systems above) -->
+<script src="InterrogationSystem.js" defer></script>
+<script src="SceneSystem.js" defer></script>
+
+<!-- Composition root -->
+<script src="Game.js" defer></script>
 </head>
 <body>
 
-<!-- HERO: image with text on the white sheet. Swap images/hero.jpg to change the picture. -->
-<div class="hero-band">
-  <header class="hero">
-    <img src="images/hero.jpg" alt="Marharyta Khursik">
-    <div class="hero-text">
-      <h1>Marharyta Khursik</h1>
-      <p class="role">Computer Science student, C++ and systems</p>
-      <p class="bio">Third-year student in Warsaw. I write C++ from scratch and enjoy operating systems, algorithm benchmarking and scheduling.</p>
-      <div class="links">
-        <a href="https://github.com/MarharytaKh">GitHub</a>
-        <a href="https://linkedin.com/in/marharyta-khursik">LinkedIn</a>
-        <a href="mailto:khursikmarharyta@gmail.com">Email</a>
-      </div>
+<div id="game">
+<audio id="bgMusic" loop>
+    <source src="music/fj.mp3" type="audio/mpeg">
+</audio>
+<button id="musicBtn">
+    <img id="musicIcon" src="images/so.png">
+</button>
+
+<input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="1">
+
+    <div id="interrogationTimer" class="hidden">
+        <div id="timerLabel">Czas rozmowy</div>
+        <div id="timerBarWrap">
+            <div id="timerFill"></div>
+        </div>
+        <div id="timerText">90s</div>
     </div>
-  </header>
+
+    <div id="introScreen">
+        <img src="images/sr.png" id="introImage">
+        <button id="startGameBtn">Zamknij</button>
+    </div>
+
+    <!-- PANEL DOWODÓW -->
+    <div id="evidencePanel">
+        <h3>Dowody</h3>
+        <ul id="evidenceList"></ul>
+    </div>
+
+    <img id="notebookIMG" src="images/pd.png">
+    <img id="notebookBtn" src="images/bn.png">
+
+    <img id="pintableIMG" src="images/ds.png">
+    <div id="leftChoices"></div>
+
+    <div id="dialogChoices"></div>
+    <div id="characters">
+        <img id="detective" src="images/gd.png">
+        <img id="suspect">
+    </div>
+    <div id="dialogBox">
+        <div id="name"></div>
+        <div id="text"></div>
+    </div>
+
+    <div id="suspectsPanel" class="hidden">
+        <div id="suspectsContent">
+            <div class="suspect">
+                <img src="images/sus1.png">
+                <button class="leftBtn" data-accuse="student">Oskarżyć</button>
+            </div>
+            <div class="suspect">
+                <img src="images/sus2.png">
+                <button class="leftBtn" data-accuse="assistant">Oskarżyć</button>
+            </div>
+            <div class="suspect">
+                <img src="images/sus3.png">
+                <button class="leftBtn" data-accuse="professor2">Oskarżyć</button>
+            </div>
+        </div>
+        <button id="closeSuspects">Zamknij</button>
+    </div>
+
+    <div id="endingScreen" class="hidden">
+        <div id="endingText"></div>
+        <button onclick="location.reload()" class="dialogBtn">Zagraj ponownie</button>
+    </div>
+
 </div>
 
-<main class="wrap wide">
-<div class="cols">
-  <div class="col col-left">
-  <!-- EDUCATION -->
-  <details class="acc">
-    <summary>Education</summary>
-    <div class="panel">
-      <h3>B.Sc. Computer Science</h3>
-      <small><a href="https://uksw.edu.pl/en/" target="_blank" rel="noopener">Cardinal Stefan Wyszyński University in Warsaw</a>, 2024 to 2027 (expected), GPA 4.28/5</small>
-      <p>Operating systems (process management, CPU scheduling, synchronization), algorithm analysis and benchmarking (5/5), statistics and probability (4.5), data structures, databases and SQL, computer networks.</p>
-    </div>
-  </details>
-
-  <!-- CERTIFICATES: copy the block inside .panel for each certificate -->
-  <details class="acc">
-    <summary>Certificates</summary>
-    <div class="panel">
-      <h3>EF SET English Certificate</h3>
-      <small>EF Standard English Test</small>
-      <p>Official English proficiency certificate.</p>
-      <div class="btns"><a href="https://cert.efset.org/en/XnZ6Hs" target="_blank" rel="noopener">View certificate</a></div>
-      <h3>Digital badge</h3>
-      <small>Credly</small>
-      <p>Verified digital badge, also shown on LinkedIn.</p>
-      <div class="btns"><a href="https://www.credly.com/badges/e0c726f0-cfec-4c1e-9018-1de50b3e54e1/linked_in_profile" target="_blank" rel="noopener">View badge</a></div>
-    </div>
-  </details>
-  </div>
-  <div class="col col-right">
-  <!-- PROJECTS: each card links to its own page in /projects.
-       To use a screenshot, put images/projects/NAME.jpg next to the page -->
-  <details class="acc" id="projects" open>
-    <summary>Projects</summary>
-    <div class="panel"><div class="cards">
-      <a class="card" href="projects/benchmark.html">
-        <div class="thumb"><img src="images/projects/benchmark.jpg" alt="" onerror="this.remove()"><span>Sorting</span></div>
-        <div class="t"><h4>Sorting & Scheduler Benchmark</h4><p>Compares sorting algorithms and the SJF scheduler with measurements and graphs.</p><div class="tags"><span>Python</span></div></div>
-      </a>
-      <a class="card" href="projects/dzia.html">
-        <div class="thumb"><img src="images/projects/dzia.jpg" alt="" onerror="this.remove()"><span>Dzia</span></div>
-        <div class="t"><h4>Dzia, 2D pixel game</h4><p>A pixel action game with three waves, a boss and card choices, in C++ with SFML and no engine.</p><div class="tags"><span>C++</span><span>SFML</span></div></div>
-      </a>
-      <a class="card" href="projects/reversi.html">
-        <div class="thumb"><img src="images/projects/reversi.jpg" alt="" onerror="this.remove()"><span>Reversi</span></div>
-        <div class="t"><h4>Reversi, console game</h4><p>The classic board game in C++, with a computer opponent and a saved player ranking.</p><div class="tags"><span>C++</span></div></div>
-      </a>
-      <a class="card" href="projects/gallery.html">
-        <div class="thumb"><img src="images/projects/gallery.jpg" alt="" onerror="this.remove()"><span>3D</span></div>
-        <div class="t"><h4>3D Model Gallery</h4><p>A 3D model gallery with a Three.js viewer for textures and geometry, run in Docker.</p><div class="tags"><span>JavaScript</span><span>Node.js</span><span>Three.js</span><span>PostgreSQL</span><span>Docker Compose</span></div></div>
-      </a>
-      <a class="card" href="projects/cogchain.html">
-        <div class="thumb"><img src="images/projects/cogchain.jpg" alt="" onerror="this.remove()"><span>Cog</span></div>
-        <div class="t"><h4>Cog Chain, 3D logic puzzle</h4><p>A downloadable puzzle for Windows and Android.</p><div class="tags"><span>Godot</span><span>C#</span><span>UML</span><span>Doxygen</span></div></div>
-      </a>
-      <a class="card" href="projects/detective.html">
-        <div class="thumb"><img src="images/projects/detective.jpg" alt="" onerror="this.remove()"><span>Detective</span></div>
-        <div class="t"><h4>Detective game</h4><p>A browser detective story with interrogations, evidence and a random culprit each game.</p><div class="tags"><span>JavaScript</span></div></div>
-      </a>
-      <a class="card" href="projects/flags.html">
-        <div class="thumb"><img src="images/projects/flags.jpg" alt="" onerror="this.remove()"><span>Flags</span></div>
-        <div class="t"><h4>Flags & Maps</h4><p>A one-minute geography quiz on flags and country maps, in C++ with Qt.</p><div class="tags"><span>C++</span><span>Qt</span></div></div>
-      </a>
-      <a class="card" href="projects/leasing.html">
-        <div class="thumb"><img src="images/projects/leasing.jpg" alt="" onerror="this.remove()"><span>Leasing</span></div>
-        <div class="t"><h4>Leasing database in Oracle</h4><p>Contracts, installment schedules and payments, with the logic in PL/SQL.</p><div class="tags"><span>Oracle</span><span>PL/SQL</span><span>SQL</span></div></div>
-      </a>
-    </div></div>
-  </details>
-
-  <!-- EXPERIENCE -->
-  <details class="acc">
-    <summary>Experience</summary>
-    <div class="panel">
-      <h3>Student Intern</h3>
-      <small>Information Systems Center, UKSW, March 15 to April 30, 2026</small>
-      <p>Implemented front-end features in HTML, CSS and JavaScript under a mentor's guidance. Worked in a Git/GitHub review cycle of commits, code reviews and revisions, and delivered tasks in phases with regular progress checks.</p>
-    </div>
-  </details>
-  </div>
-</div>
-</main>
 </body>
 </html>
