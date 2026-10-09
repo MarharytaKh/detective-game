@@ -1,409 +1,115 @@
-﻿@font-face {
-    font-family: "XTypewriter-Regular";
-    src: url("fonts/XTypewriter-Regular.ttf");
+/* ===== Colors & fonts: change them here ===== */
+:root{
+  --dark:#21170f;      /* dark band around the hero image */
+  --paper:#ecebe7;     /* paper color for mobile hero text */
+  --bg:#f8f5ee;        /* milky page background */
+  --surface:#fffdf9;   /* (unused now) */
+  --sheet:#ecebe7;     /* color of the accordions: same as the white sheet */
+  --sheet-card:#f8f7f3;/* project cards inside accordions */
+  --sheet-line:#d3d1c9;/* borders on the sheet */
+  --ink:#221b16;       /* main text */
+  --muted:#675d54;     /* secondary text */
+  --line:#e0d9cc;      /* borders */
+  --accent:#a8512f;    /* brick accent */
+  --display:"PT Serif",Georgia,serif;
+  --body:"PT Serif",Georgia,serif;
 }
-@font-face {
-    font-family: "friendlyscribbles";
-    src: url("fonts/friendlyscribbles.ttf");
+@media (prefers-color-scheme:dark){
+  :root{--bg:#1c1511;--surface:#271e18;--ink:#f1e9df;--muted:#b3a698;--line:#3a2f27;--accent:#e0875f}
 }
-body {
-    margin: 0;
-    font-family: "XTypewriter-Regular";
-    background: #1a1a1a;
-    color: white;
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 1.0625rem/1.6 var(--body)}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px;border-radius:6px}
+
+/* ===== Hero (image + text on the white sheet) ===== */
+.hero-band{background:var(--dark)}
+.hero{position:relative;max-width:1500px;margin:0 auto;container-type:inline-size}
+.hero>img{display:block;width:100%;height:auto}
+/* Text block position on the white sheet: change left / top / width if you swap the image */
+.hero-text{position:absolute;left:20%;top:25%;width:38%;color:#221b16}
+.hero-text h1{font:700 max(26px,4.4cqw)/1.02 var(--display);letter-spacing:-.03em;margin:0 0 1.2cqw}
+.role{font:600 max(14px,1.5cqw)/1.3 var(--body);color:#8a4527;margin:0 0 1.2cqw}
+.bio{font-size:max(14px,1.5cqw);line-height:1.5;color:#4a423b;margin:0 0 2cqw}
+.links{display:flex;gap:.6rem;flex-wrap:wrap}
+.links a{padding:.45rem 1rem;border:2px solid #221b16;border-radius:0;font-weight:600;text-decoration:none;font-size:max(14px,1.4cqw);color:#221b16}
+.links a:hover{background:#221b16;color:#ecebe7}
+
+/* ===== Milky section with accordions ===== */
+.wrap{max-width:56rem;margin:0 auto;padding:3rem 1.25rem}
+details.acc{--accent:#a8512f;background:var(--sheet);color:#221b16;border:1px solid var(--sheet-line);border-radius:0;margin-bottom:.9rem}
+details.acc>summary{list-style:none;cursor:pointer;padding:1.1rem 1.4rem;font:700 1.35rem var(--display);display:flex;justify-content:space-between;align-items:center}
+details.acc>summary::-webkit-details-marker{display:none}
+details.acc>summary::after{content:"+";font-size:1.8rem;line-height:1;color:var(--accent);transition:transform .2s}
+details.acc[open]>summary::after{transform:rotate(45deg)}
+.panel{padding:0 1.4rem 1.4rem}
+.panel h3{font:700 1.1rem var(--display);margin:0}
+.panel small{color:#675d54;display:block;margin-bottom:.5rem}
+.panel p{margin:.4rem 0 0;color:#4a423b}
+.empty{border:1.5px dashed #b9b6ac;border-radius:0;padding:1.2rem;color:#675d54}
+
+/* ===== Project cards ===== */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(13rem,1fr));gap:1rem}
+.card{background:var(--sheet-card);color:#221b16;border:1px solid var(--sheet-line);border-radius:0;overflow:hidden;text-decoration:none;display:flex;flex-direction:column;transition:border-color .15s}
+.card:hover{border-color:var(--accent)}
+.card .t{padding:.9rem 1rem 1.1rem;flex:1;display:flex;flex-direction:column}
+.card h4{font:700 1.05rem var(--display);margin:0 0 .3rem}
+.card p{margin:0;font-size:.95rem;color:#4a423b}
+.thumb{position:relative;overflow:hidden;aspect-ratio:16/10;width:100%;display:flex;align-items:center;justify-content:center;font:700 2rem var(--display);}
+.thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+/* Placeholder (used until you add a screenshot): flat, no gradient */
+.thumb{background:var(--sheet);color:#8a8378;border-bottom:1px solid var(--sheet-line)}
+
+/* ===== Project page ===== */
+.detail .thumb{aspect-ratio:16/7;border-radius:0;font-size:3rem;border:1px solid var(--sheet-line)}
+.detail h1{font:700 clamp(2rem,6vw,3rem)/1.05 var(--display);letter-spacing:-.03em;margin:1.5rem 0 .5rem}
+.detail h2{font:700 1.25rem var(--display);margin:1.8rem 0 .5rem}
+.detail ul{padding-left:1.2rem;margin:0}
+.detail li{margin-bottom:.4rem}
+.back{display:inline-block;margin-bottom:1.5rem;font-weight:600;text-decoration:none;color:var(--accent)}
+.tags{display:flex;gap:.4rem;flex-wrap:wrap}
+.tags span{font-size:.85rem;padding:.15rem .7rem;border-radius:0;border:1px solid var(--line)}
+.status{color:var(--accent);font-weight:600;margin:0 0 .6rem}
+
+/* ===== Mobile: text moves under the image ===== */
+@media (max-width:900px){
+  .hero-text{position:static;width:auto;background:var(--paper);padding:1.5rem 1.25rem 1.75rem}
+  .hero-text h1{font-size:2.2rem}
+  .role,.bio,.links a{font-size:1rem}
+  .bio{margin-bottom:1.1rem}
 }
 
-#game {
-    width: 100vw;
-    height: 100vh;
-    position: relative;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+/* ===== Link buttons (project pages, certificates) ===== */
+.btns{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:.6rem}
+.btns a{padding:.45rem 1rem;border:2px solid var(--ink);font-weight:600;text-decoration:none;color:var(--ink);font-size:.95rem}
+.btns a:hover{background:var(--ink);color:var(--bg)}
+.panel .btns a{color:#221b16;border-color:#221b16}
+.panel .btns a:hover{background:#221b16;color:#ecebe7}
+.panel .btns{margin-bottom:1.2rem}
+
+/* ===== Two columns on the main page ===== */
+.wrap.wide{max-width:76rem}
+.cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.8fr);gap:1.25rem;align-items:start}
+.col details.acc:last-child{margin-bottom:0}
+@media (max-width:900px){
+  .cols{grid-template-columns:1fr}
+  .col-right{order:-1}
 }
 
-#evidencePanel {
-    position: absolute;
-    right: 20px;
-    top: 20px;
-    width: 203px;
-    height: 435px;
-    background: url("images/ave.png");
-    background-size: cover;
-    padding: 15px;
-    color: black;
-}
-#evidenceList {
-    max-height: 360px;
-    overflow-y: auto;
-    padding-right: 5px;
-}
-#evidenceList::-webkit-scrollbar {
-    width: 12px;
-}
-    #evidenceList::-webkit-scrollbar-track {
-        background: url("images/bnslt.png");
-        background-size: 100% 100%;
-        background-repeat: no-repeat;
-    }
+/* ===== Tech tags on cards ===== */
+.card .tags{margin-top:auto;padding-top:.8rem;gap:.3rem}
+.card .tags span{font-size:.75rem;padding:.1rem .55rem;border:1px solid var(--sheet-line);color:#675d54}
 
-    #evidenceList::-webkit-scrollbar-thumb {
-        background: url("images/bnsl.png");
-        background-size: 100% 100%;
-        border-radius: 10px;
-    }
+/* ===== Image slots inside project text ===== */
+.shot{position:relative;overflow:hidden;margin:1.5rem 0;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;border:1.5px dashed var(--line);color:var(--muted);font-size:.95rem}
+.shot img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 
-#notebookBtn {
-    font-family: "XTypewriter-Regular", Arial;
-    position: absolute;
-    bottom: 50px;
-    right: 60px;
-    width: 140px;
-    height: auto;
-
-    cursor: pointer;
-    z-index: 2000;
-}
-
-#leftChoices {
-    font-family: "XTypewriter-Regular", Arial;
-    position: absolute;
-    left: 40px;
-    top: 60px;
-    width: 268px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    z-index: 10;
-}
-
-#dialogChoices {
-    position: absolute;
-    background: url("images/bn.png");
-    bottom: 140px;
-    z-index: 6;
-    left: 73%;
-    transform: translateX(-50%);
-}
-
-.leftBtn {
-    font-family: "XTypewriter-Regular", Arial;
-    height: 50px;
-    background: url("images/bnh.png");
-    background-size: 100% 100%;
-    border: none;
-    color: black;
-    cursor: pointer;
-}
-    .leftBtn.new {
-        color: darkblue;
-        filter: brightness(1.2);
-    }
-
-    .leftBtn.asked {
-        color: gray;
-        filter: brightness(0.7);
-    }
-
-.dialogBtn {
-    font-family: "XTypewriter-Regular", Arial;
-    height: 60px;
-    background: url("images/bn.png");
-    background-size: 100% 100%;
-    border: none;
-    color: black;
-    cursor: pointer;
-}
-
-#dialogBox {
-    position: absolute;
-    top: 580px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 792px;
-    height: 131px;
-    background: url("images/dialog.png");
-    background-size: cover;
-    position: relative;
-}
-
-#name {
-    position: absolute;
-    top: 10px;
-    left: 60px;
-    color: #ffd700;
-}
-
-#text {
-    position: absolute;
-    top: 60px;
-    left: 40px;
-    right: 40px;
-    color: black;
-    white-space: pre-wrap;
-}
-
-#suspectsPanel {
-    position: absolute;
-    flex-direction: column;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 800px;
-    height: 690px;
-    overflow: hidden;
-    background: url("images/pd3.png");
-    background-size: 100% 100%;
-    background-repeat: no-repeat;
-    padding: 20px;
-    z-index: 1000;
-}
-
-.hidden {
-    display: none;
-}
-.suspect {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0;
-}
-
-    .suspect button {
-        background: url("images/bnskc.png");
-        margin-top: -20px;
-        width: 185px;
-        height: 58px;
-    }
-#suspectsContent {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-    align-items: start;
-}
-
-    #suspectsContent img {
-        width: 100%;
-        max-height: 450px;
-        margin: 0;
-        object-fit: contain;
-        display: block;
-    }
-#closeSuspects {
-    font-family: "XTypewriter-Regular", Arial;
-    position: absolute;
-    bottom: 45px;
-    right: 60px;
-    height: 50px;
-    width: 100px;
-    background: url("images/bn.png");
-    background-size: 100% 100%;
-    border: none;
-    color: black;
-    cursor: pointer;
-}
-#notebookIMG {
-    position: absolute;
-    bottom: 20px;
-    right: 0px;
-
-    width: 350px;
-    height: auto;
-
-    z-index: 2000;
-}
-
-#pintableIMG {
-    position: absolute;
-    top: 5px;
-    left: 0px;
-    width: 345px;
-    height: auto;
-    z-index: 1;
-}
-#introScreen {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: black;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    z-index: 5000;
-}
-
-#introImage {
-    max-width: 90%;
-    max-height: 80%;
-}
-
-#startGameBtn {
-    font-family: "XTypewriter-Regular", Arial;
-    height: 60px;
-    background: url("images/bn.png");
-    margin-top: 20px;
-    padding: 10px 20px;
-    background-size: 100% 100%;
-    font-size: 18px;
-    cursor: pointer;
-}
-#endingScreen {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: url("images/ted.png");
-    color: white;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    font-size: 24px;
-    z-index: 5000;
-}
-
-.hidden {
-    display: none !important;
-}
-#characters {
-    position: absolute;
-    bottom: 0px;
-    width: 100%;
-    height: 650px;
-    pointer-events: none;
-    z-index: 0;
-}
-
-#detective {
-    position: absolute;
-    left: 360px;
-    bottom: 0;
-    height: 100%;
-}
-
-#suspect {
-    position: absolute;
-    right: 350px;
-    bottom: 0;
-    height: 100%;
-}
-#musicBtn {
-    position: absolute;
-    bottom: 22px;
-    left: 280px;
-    width: 75px;
-    height: 75px;
-    background: url("images/bnu.png");
-    background-size: 100% 100%;
-    border: none;
-    cursor: pointer;
-    z-index: 3000;
-}
-    #musicBtn img {
-        width: 35px;
-        height: 35px;
-    }
-#volumeSlider {
-    position: absolute;
-    bottom: 50px;
-    left: 50px;
-    width: 150px;
-    z-index: 3000;
-}
-#volumeSlider {
-    position: absolute;
-    bottom: 50px;
-    left: 50px;
-    width: 200px;
-    height: 20px;
-    appearance: none;
-    background: url("images/bnslts.png");
-    background-size: 100% 100%;
-    background-repeat: no-repeat;
-    cursor: pointer;
-    z-index: 3000;
-}
-    #volumeSlider::-webkit-slider-runnable-track {
-        height: 20px;
-        background: transparent;
-    }
-    #volumeSlider::-webkit-slider-thumb {
-        appearance: none;
-        width: 30px;
-        height: 20px;
-        background: url("images/bnsltso.png");
-        background-size: contain;
-        background-repeat: no-repeat;
-        margin-top: 0px;
-
-        cursor: pointer;
-    }
-
-/* ── Interrogation Timer ────────────────────────── */
-#interrogationTimer {
-    position: absolute;
-    top: 16px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    background: rgba(0,0,0,0.55);
-    border: 2px solid #888;
-    border-radius: 8px;
-    padding: 6px 14px;
-    z-index: 500;
-    font-family: "XTypewriter-Regular", monospace;
-    color: #eee;
-    font-size: 13px;
-    min-width: 260px;
-}
-
-#timerLabel {
-    white-space: nowrap;
-    color: #ccc;
-    font-size: 12px;
-}
-
-#timerBarWrap {
-    flex: 1;
-    height: 10px;
-    background: rgba(255,255,255,0.15);
-    border-radius: 5px;
-    overflow: hidden;
-}
-
-#timerFill {
-    height: 100%;
-    width: 100%;
-    background: hsl(120, 90%, 45%);
-    border-radius: 5px;
-    transition: width 0.9s linear, background 0.9s linear;
-}
-
-#timerText {
-    min-width: 32px;
-    text-align: right;
-    font-size: 14px;
-    font-weight: bold;
-    color: #fff;
-}
-
-@keyframes timerPulse {
-    0%, 100% { box-shadow: 0 0 0 0 rgba(220,50,50,0); }
-    50%       { box-shadow: 0 0 8px 4px rgba(220,50,50,0.6); }
-}
-
-#interrogationTimer.timer-urgent {
-    border-color: #cc2222;
-    animation: timerPulse 0.8s ease-in-out infinite;
-}
-
-#interrogationTimer.timer-urgent #timerText {
-    color: #ff6666;
-}
-/* ────────────────────────────────────────────────── */
+/* ===== Image fixes: one size, centered, never wider than the column ===== */
+.detail{min-width:0;max-width:100%}
+.detail figure{margin:1.5rem 0;padding:0;width:100%}
+.detail .shot{aspect-ratio:16/9;width:100%;max-width:100%;margin:1.5rem auto}
+.detail .thumb{width:100%;max-width:100%;margin:0 auto}
+.detail img{display:block;max-width:100%}
+.shot img,.thumb img{width:100%;height:100%;object-fit:cover;object-position:center}
+.card{min-width:0}
+.panel small a{color:var(--accent);text-underline-offset:2px}
